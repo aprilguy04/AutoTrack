@@ -1,0 +1,255 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(uuid())
+  email            String            @unique
+  passwordHash     String
+  fullName         String
+  phone            String?
+  role             String            @default("client")
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  notifications    Notification[]
+  ordersAsMechanic OrderStage[]      @relation("StageMechanic")
+  ordersAsCustomer Order[]           @relation("OrderCustomer")
+  attachments      StageAttachment[]
+  comments         StageComment[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model VehicleBrand {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  nameRu    String?
+  logoUrl   String?
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  models    VehicleModel[]
+
+  @@index([name])
+  @@map("vehicle_brands")
+}
+
+model VehicleModel {
+  id          String              @id @default(uuid())
+  brandId     String
+  name        String
+  nameRu      String?
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  generations VehicleGeneration[]
+  brand       VehicleBrand        @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([brandId, name])
+  @@index([brandId])
+  @@index([name])
+  @@map("vehicle_models")
+}
+
+model VehicleGeneration {
+  id        String       @id @default(uuid())
+  modelId   String
+  name      String
+  nameRu    String?
+  yearFrom  Int?
+  yearTo    Int?
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  orders    Order[]
+  model     VehicleModel @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([modelId])
+  @@index([name])
+  @@map("vehicle_generations")
+}
+
+model ServiceTemplate {
+  id             String          @id @default(uuid())
+  name           String
+  description    String?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  orders         Order[]
+  stageTemplates StageTemplate[]
+
+  @@map("service_templates")
+}
+
+model StageTemplate {
+  id                String          @id @default(uuid())
+  serviceTemplateId String
+  name              String
+  description       String?
+  orderIndex        Int
+  estimatedHours    Float?
+  isRequired        Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  stages            OrderStage[]
+  serviceTemplate   ServiceTemplate @relation(fields: [serviceTemplateId], references: [id], onDelete: Cascade)
+
+  @@index([serviceTemplateId])
+  @@map("stage_templates")
+}
+
+model Order {
+  id                  String               @id @default(uuid())
+  title               String
+  description         String?
+  customerId          String
+  vehicleGenerationId String?
+  vehicleYear         Int?
+  vehicleInfo         String?
+  serviceType         String
+  serviceTypeOther    String?
+  status              String               @default("pending")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  completedAt         DateTime?
+  adminLastViewedAt   DateTime?
+  serviceTemplateId   String?
+  notifications       Notification[]
+  orderInventoryItems OrderInventoryItem[]
+  stages              OrderStage[]
+  customer            User                 @relation("OrderCustomer", fields: [customerId], references: [id], onUpdate: NoAction)
+  serviceTemplate     ServiceTemplate?     @relation(fields: [serviceTemplateId], references: [id], onUpdate: NoAction)
+  vehicleGeneration   VehicleGeneration?   @relation(fields: [vehicleGenerationId], references: [id], onUpdate: NoAction)
+
+  @@index([customerId])
+  @@index([vehicleGenerationId])
+  @@index([status])
+  @@index([serviceType])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderStage {
+  id              String            @id @default(uuid())
+  orderId         String
+  stageTemplateId String?
+  name            String
+  description     String?
+  status          String            @default("pending")
+  assignedTo      String?
+  startedAt       DateTime?
+  completedAt     DateTime?
+  orderIndex      Int
+  lastViewedAt    DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  mechanic        User?             @relation("StageMechanic", fields: [assignedTo], references: [id], onUpdate: NoAction)
+  order           Order             @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  stageTemplate   StageTemplate?    @relation(fields: [stageTemplateId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  attachments     StageAttachment[]
+  comments        StageComment[]
+
+  @@index([orderId])
+  @@index([assignedTo])
+  @@index([status])
+  @@map("order_stages")
+}
+
+model StageComment {
+  id        String     @id @default(uuid())
+  stageId   String
+  authorId  String
+  content   String     @db.NVarChar(4000)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  author    User       @relation(fields: [authorId], references: [id], onUpdate: NoAction)
+  stage     OrderStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  @@index([stageId])
+  @@index([createdAt])
+  @@map("stage_comments")
+}
+
+model StageAttachment {
+  id           String     @id @default(uuid())
+  stageId      String
+  uploadedById String
+  fileName     String
+  filePath     String
+  fileSize     Int
+  mimeType     String?
+  description  String?
+  createdAt    DateTime   @default(now())
+  stage        OrderStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  uploadedBy   User       @relation(fields: [uploadedById], references: [id], onUpdate: NoAction)
+
+  @@index([stageId])
+  @@index([createdAt])
+  @@map("stage_attachments")
+}
+
+model InventoryItem {
+  id          String               @id @default(uuid())
+  name        String
+  description String?
+  category    String
+  sku         String?              @unique
+  stock       Int                  @default(0)
+  unit        String               @default("шт")
+  price       Decimal?             @db.Decimal(10, 2)
+  isActive    Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  orderItems  OrderInventoryItem[]
+
+  @@index([category])
+  @@index([sku])
+  @@map("inventory_items")
+}
+
+model OrderInventoryItem {
+  id              String        @id @default(uuid())
+  orderId         String
+  inventoryItemId String
+  quantity        Int           @default(1)
+  unitPrice       Decimal?      @db.Decimal(10, 2)
+  createdAt       DateTime      @default(now())
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id])
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, inventoryItemId])
+  @@index([orderId])
+  @@index([inventoryItemId])
+  @@map("order_inventory_items")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  type      String
+  channel   String    @default("in_app")
+  title     String
+  message   String    @db.NVarChar(2000)
+  isRead    Boolean   @default(false)
+  readAt    DateTime?
+  metadata  String?   @db.NVarChar(4000)
+  createdAt DateTime  @default(now())
+  orderId   String?
+  order     Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      User      @relation(fields: [userId], references: [id], onUpdate: NoAction)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}

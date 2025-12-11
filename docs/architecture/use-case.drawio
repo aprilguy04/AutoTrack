@@ -1,0 +1,134 @@
+<mxfile host="app.diagrams.net" modified="2025-11-25T18:05:00.000Z" agent="Manual" version="21.6.0" type="device">
+  <diagram name="Use Case" id="u1">
+    <mxGraphModel dx="1107" dy="659" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <!-- Actors -->
+        <mxCell id="actor_guest" value="Гость" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="60" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_client" value="Клиент" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="60" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_mechanic" value="Механик" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="440" width="60" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_admin" value="Администратор" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="620" width="60" height="120" as="geometry"/>
+        </mxCell>
+        <!-- System boundary -->
+        <mxCell id="system_boundary" value="Web-приложение" style="shape=rectangle;rounded=1;whiteSpace=wrap;html=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="1100" height="760" as="geometry"/>
+        </mxCell>
+        <!-- Guest use cases -->
+        <mxCell id="uc_register" value="Регистрация" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="80" y="80" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_login" value="Аутентификация" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="80" y="170" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_services_view" value="Просмотр услуг" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="80" y="260" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <!-- Client use cases -->
+        <mxCell id="uc_order_create" value="Создание заказа" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="360" y="140" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_progress_view" value="Отслеживание этапов" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="360" y="230" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_components_select" value="Выбор комплектующих" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="360" y="320" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_history" value="История заказов" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="360" y="410" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_profile_manage" value="Управление профилем" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="360" y="500" width="210" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_notifications" value="Получение уведомлений" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="360" y="590" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <!-- Mechanic use cases -->
+        <mxCell id="uc_assignments" value="Просмотр назначенных заказов" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="660" y="180" width="250" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_stage_complete" value="Отметка этапов" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="660" y="270" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_comments" value="Комментарии к этапам" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="660" y="360" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_attachments" value="Загрузка фото/отчетов" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="660" y="450" width="230" height="60" as="geometry"/>
+        </mxCell>
+        <!-- Admin use cases -->
+        <mxCell id="uc_stage_crud" value="CRUD этапов ремонта" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="960" y="220" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_inventory" value="Управление комплектующими" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="960" y="310" width="260" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_user_admin" value="Управление пользователями" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="system_boundary">
+          <mxGeometry x="960" y="400" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <!-- Edges -->
+        <mxCell id="edge_guest_register" edge="1" parent="1" source="actor_guest" target="uc_register">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_guest_login" edge="1" parent="1" source="actor_guest" target="uc_login">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_guest_services" edge="1" parent="1" source="actor_guest" target="uc_services_view">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_order" edge="1" parent="1" source="actor_client" target="uc_order_create">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_progress" edge="1" parent="1" source="actor_client" target="uc_progress_view">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_components" edge="1" parent="1" source="actor_client" target="uc_components_select">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_history" edge="1" parent="1" source="actor_client" target="uc_history">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_profile" edge="1" parent="1" source="actor_client" target="uc_profile_manage">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_client_notifications" edge="1" parent="1" source="actor_client" target="uc_notifications">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mechanic_assignments" edge="1" parent="1" source="actor_mechanic" target="uc_assignments">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mechanic_stage" edge="1" parent="1" source="actor_mechanic" target="uc_stage_complete">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mechanic_comments" edge="1" parent="1" source="actor_mechanic" target="uc_comments">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_mechanic_attachments" edge="1" parent="1" source="actor_mechanic" target="uc_attachments">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_admin_stage" edge="1" parent="1" source="actor_admin" target="uc_stage_crud">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_admin_inventory" edge="1" parent="1" source="actor_admin" target="uc_inventory">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="edge_admin_user" edge="1" parent="1" source="actor_admin" target="uc_user_admin">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+
+
+
+
+
+

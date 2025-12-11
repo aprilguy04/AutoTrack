@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+build/
+coverage/
+
+# Env files
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# Editors
+.DS_Store
+thumbs.db
+
+# Runtime artifacts
+*.sqlite
+
+uploads/
+
+
+
+
+
+
