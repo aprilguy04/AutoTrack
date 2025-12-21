@@ -64,7 +64,7 @@ export const InventoryItemForm = ({ item, onClose, onSubmit, isLoading }: Invent
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center p-6 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-start justify-center p-6 overflow-y-auto">
       <div className="w-full max-w-4xl bg-dark-900 rounded-3xl border border-dark-700 shadow-2xl my-8">
         <div className="p-6 border-b border-dark-700 flex items-start justify-between gap-4">
           <div>

@@ -6,6 +6,7 @@ import { Button } from "../../../shared/ui/Button.js";
 import { Card } from "../../../shared/ui/Card.js";
 import { ImageGallery } from "../../../shared/ui/ImageGallery.js";
 import { useAuthStore } from "../../../entities/user/store.js";
+import { StageInventoryClient } from "./StageInventoryClient.tsx";
 
 type StageDetailsDrawerProps = {
   stageId: string | null;
@@ -90,7 +91,7 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false }: S
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+    <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex justify-end">
       <div className="w-full max-w-2xl h-full bg-dark-900 border-l border-dark-700 flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
           <div>
@@ -201,6 +202,10 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false }: S
                   <ImageGallery images={attachments} />
                 </div>
               </Card>
+
+              {user?.role === "client" && stage.order && (
+                <StageInventoryClient stageId={stageId} orderId={stage.order.id} />
+              )}
             </>
           )}
         </div>

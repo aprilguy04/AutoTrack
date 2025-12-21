@@ -91,7 +91,7 @@ export const CompatibilityManager = ({ itemId, onClose }: CompatibilityManagerPr
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center p-6">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-center justify-center p-6">
       <Card variant="glass" className="w-full max-w-2xl">
         <div className="space-y-6">
           <div className="flex items-center justify-between">

@@ -218,7 +218,7 @@ export const AdminPage = () => {
       </Card>
 
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 flex items-start justify-center p-6">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-start justify-center p-6">
           <div className="w-full max-w-5xl bg-dark-900 rounded-3xl border border-dark-700 shadow-2xl flex flex-col max-h-full">
             <div className="p-6 border-b border-dark-700 flex items-start justify-between gap-4">
               <div>
@@ -236,7 +236,10 @@ export const AdminPage = () => {
                 <Card variant="glass">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-lg font-semibold text-dark-50">Этапы</h4>
+                      <div>
+                        <h4 className="text-lg font-semibold text-dark-50">Этапы</h4>
+                        <p className="text-xs text-dark-400 mt-1">Нажмите на этап для управления комплектующими</p>
+                      </div>
                       {isStagesLoading && <span className="text-xs text-dark-400">Загрузка...</span>}
                     </div>
                     <StageTimeline
@@ -355,7 +358,7 @@ export const AdminPage = () => {
                 </form>
               </Card>
 
-              {activeStageId && (
+              {activeStageId ? (
                 <StageInventoryManager
                   stageId={activeStageId}
                   orderId={selectedOrder.id}
@@ -370,7 +373,15 @@ export const AdminPage = () => {
                       : undefined
                   }
                 />
-              )}
+              ) : orderStages.length > 0 ? (
+                <Card variant="glass">
+                  <div className="text-center text-dark-400 py-8">
+                    <div className="text-4xl mb-3">👆</div>
+                    <p className="text-lg font-medium text-dark-300">Выберите этап выше</p>
+                    <p className="text-sm mt-2">Нажмите на этап в списке, чтобы добавить или управлять комплектующими</p>
+                  </div>
+                </Card>
+              ) : null}
             </div>
           </div>
         </div>

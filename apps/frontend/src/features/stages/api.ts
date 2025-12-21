@@ -9,6 +9,35 @@ export interface StageDetailsResponse {
   };
 }
 
+export interface StageInventoryItem {
+  id: string;
+  orderStageId: string;
+  inventoryItemId: string;
+  quantity: number;
+  unitPrice?: number;
+  isRequired: boolean;
+  suggestedByAdmin: boolean;
+  selectedByClient: boolean;
+  status: string;
+  clientNotes?: string;
+  adminNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+  inventoryItem: {
+    id: string;
+    name: string;
+    description?: string;
+    category: string;
+    subcategory?: string;
+    sku?: string;
+    oemNumber?: string;
+    manufacturer?: string;
+    price?: number;
+    stock: number;
+    unit: string;
+  };
+}
+
 export const stagesApi = {
   getByOrder: async (orderId: string) => {
     const response = await api.get<{ stages: Order["stages"] }>(`/stages/order/${orderId}`);
@@ -41,6 +70,21 @@ export const stagesApi = {
   },
   markViewed: async (stageId: string) => {
     await api.post(`/stages/${stageId}/view`);
+  },
+  // Управление комплектующими для клиента
+  getStageInventory: async (stageId: string): Promise<{ items: StageInventoryItem[] }> => {
+    const response = await api.get<{ items: StageInventoryItem[] }>(`/stages/${stageId}/inventory`);
+    return response.data;
+  },
+  respondToInventory: async (
+    itemId: string,
+    payload: { selectedByClient: boolean; clientNotes?: string }
+  ): Promise<{ item: StageInventoryItem }> => {
+    const response = await api.patch<{ item: StageInventoryItem }>(
+      `/stages/inventory/${itemId}/respond`,
+      payload
+    );
+    return response.data;
   },
 };
 

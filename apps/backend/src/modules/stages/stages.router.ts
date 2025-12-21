@@ -196,5 +196,142 @@ router.post("/:stageId/view", requireRole("mechanic"), async (req, res) => {
   }
 });
 
+// ============================================================================
+// УПРАВЛЕНИЕ КОМПЛЕКТУЮЩИМИ ДЛЯ КЛИЕНТА
+// ============================================================================
+
+/**
+ * GET /api/stages/:stageId/inventory - Получить комплектующие этапа (для клиента)
+ */
+router.get("/:stageId/inventory", async (req, res) => {
+  try {
+    const { stageId } = req.params;
+    const userId = req.user!.id;
+    const userRole = req.user!.role;
+
+    // Проверяем доступ к этапу
+    const stage = await stagesService.getStageById(stageId);
+    if (!stage) {
+      res.status(404).json({ message: "Этап не найден" });
+      return;
+    }
+
+    // Клиент может видеть только свои заказы
+    if (userRole === "client" && stage.order.customer.id !== userId) {
+      res.status(403).json({ message: "Нет доступа к этому этапу" });
+      return;
+    }
+
+    const { prisma } = await import("../../db/prisma.js");
+    const items = await prisma.orderStageInventoryItem.findMany({
+      where: { orderStageId: stageId },
+      include: {
+        inventoryItem: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            category: true,
+            subcategory: true,
+            sku: true,
+            oemNumber: true,
+            manufacturer: true,
+            price: true,
+            stock: true,
+            unit: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    res.json({ items });
+  } catch (error: any) {
+    console.error("Get stage inventory error:", error);
+    res.status(500).json({ message: "Ошибка при получении комплектующих" });
+  }
+});
+
+const respondToInventorySchema = z.object({
+  selectedByClient: z.boolean(),
+  clientNotes: z.string().optional(),
+});
+
+/**
+ * PATCH /api/stages/inventory/:itemId/respond - Ответить на предложение комплектующего (для клиента)
+ */
+router.patch("/inventory/:itemId/respond", requireRole("client", "admin"), async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const userId = req.user!.id;
+    const userRole = req.user!.role;
+    const data = respondToInventorySchema.parse(req.body);
+
+    const { prisma } = await import("../../db/prisma.js");
+
+    // Получаем комплектующее с этапом и заказом
+    const item = await prisma.orderStageInventoryItem.findUnique({
+      where: { id: itemId },
+      include: {
+        orderStage: {
+          include: {
+            order: {
+              include: {
+                customer: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!item) {
+      res.status(404).json({ message: "Комплектующее не найдено" });
+      return;
+    }
+
+    // Проверяем доступ
+    if (userRole === "client" && item.orderStage.order.customer.id !== userId) {
+      res.status(403).json({ message: "Нет доступа к этому комплектующему" });
+      return;
+    }
+
+    // Обновляем статус
+    const updated = await prisma.orderStageInventoryItem.update({
+      where: { id: itemId },
+      data: {
+        selectedByClient: data.selectedByClient,
+        clientNotes: data.clientNotes || item.clientNotes,
+        status: data.selectedByClient ? "approved" : "rejected",
+      },
+      include: {
+        inventoryItem: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            category: true,
+            sku: true,
+            oemNumber: true,
+            manufacturer: true,
+            price: true,
+            stock: true,
+            unit: true,
+          },
+        },
+      },
+    });
+
+    res.json({ item: updated });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "Ошибка валидации", errors: error.errors });
+      return;
+    }
+    console.error("Respond to inventory error:", error);
+    res.status(500).json({ message: "Ошибка при ответе на предложение" });
+  }
+});
+
 export const stagesRouter = router;
 
