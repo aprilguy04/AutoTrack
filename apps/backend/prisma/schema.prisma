@@ -8,6 +8,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================================
+// МОДЕЛИ ПОЛЬЗОВАТЕЛЕЙ
+// ============================================================================
+
 model User {
   id               String            @id @default(uuid())
   email            String            @unique
@@ -29,30 +33,36 @@ model User {
   @@map("users")
 }
 
+// ============================================================================
+// МОДЕЛИ АВТОМОБИЛЕЙ (КАТАЛОГ)
+// ============================================================================
+
 model VehicleBrand {
-  id        String         @id @default(uuid())
-  name      String         @unique
-  nameRu    String?
-  logoUrl   String?
-  isActive  Boolean        @default(true)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  models    VehicleModel[]
+  id                      String                    @id @default(uuid())
+  name                    String                    @unique
+  nameRu                  String?
+  logoUrl                 String?
+  isActive                Boolean                   @default(true)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  models                  VehicleModel[]
+  compatibleInventoryItems InventoryItemCompatibility[]
 
   @@index([name])
   @@map("vehicle_brands")
 }
 
 model VehicleModel {
-  id          String              @id @default(uuid())
-  brandId     String
-  name        String
-  nameRu      String?
-  isActive    Boolean             @default(true)
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  generations VehicleGeneration[]
-  brand       VehicleBrand        @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                      String                    @id @default(uuid())
+  brandId                 String
+  name                    String
+  nameRu                  String?
+  isActive                Boolean                   @default(true)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  generations             VehicleGeneration[]
+  brand                   VehicleBrand              @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  compatibleInventoryItems InventoryItemCompatibility[]
 
   @@unique([brandId, name])
   @@index([brandId])
@@ -61,22 +71,27 @@ model VehicleModel {
 }
 
 model VehicleGeneration {
-  id        String       @id @default(uuid())
-  modelId   String
-  name      String
-  nameRu    String?
-  yearFrom  Int?
-  yearTo    Int?
-  isActive  Boolean      @default(true)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  orders    Order[]
-  model     VehicleModel @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                      String                    @id @default(uuid())
+  modelId                 String
+  name                    String
+  nameRu                  String?
+  yearFrom                Int?
+  yearTo                  Int?
+  isActive                Boolean                   @default(true)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  orders                  Order[]
+  model                   VehicleModel              @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  compatibleInventoryItems InventoryItemCompatibility[]
 
   @@index([modelId])
   @@index([name])
   @@map("vehicle_generations")
 }
+
+// ============================================================================
+// МОДЕЛИ ШАБЛОНОВ УСЛУГ И ЭТАПОВ
+// ============================================================================
 
 model ServiceTemplate {
   id             String          @id @default(uuid())
@@ -92,21 +107,26 @@ model ServiceTemplate {
 }
 
 model StageTemplate {
-  id                String          @id @default(uuid())
-  serviceTemplateId String
-  name              String
-  description       String?
-  orderIndex        Int
-  estimatedHours    Float?
-  isRequired        Boolean         @default(true)
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  stages            OrderStage[]
-  serviceTemplate   ServiceTemplate @relation(fields: [serviceTemplateId], references: [id], onDelete: Cascade)
+  id                      String                        @id @default(uuid())
+  serviceTemplateId       String
+  name                    String
+  description             String?
+  orderIndex              Int
+  estimatedHours          Float?
+  isRequired              Boolean                       @default(true)
+  createdAt               DateTime                      @default(now())
+  updatedAt               DateTime                      @updatedAt
+  stages                  OrderStage[]
+  serviceTemplate         ServiceTemplate               @relation(fields: [serviceTemplateId], references: [id], onDelete: Cascade)
+  suggestedInventoryItems StageTemplateInventoryItem[]
 
   @@index([serviceTemplateId])
   @@map("stage_templates")
 }
+
+// ============================================================================
+// МОДЕЛИ ЗАКАЗОВ
+// ============================================================================
 
 model Order {
   id                  String               @id @default(uuid())
@@ -116,6 +136,7 @@ model Order {
   vehicleGenerationId String?
   vehicleYear         Int?
   vehicleInfo         String?
+  vinNumber           String?              // VIN номер автомобиля
   serviceType         String
   serviceTypeOther    String?
   status              String               @default("pending")
@@ -136,28 +157,30 @@ model Order {
   @@index([status])
   @@index([serviceType])
   @@index([createdAt])
+  @@index([vinNumber])
   @@map("orders")
 }
 
 model OrderStage {
-  id              String            @id @default(uuid())
-  orderId         String
-  stageTemplateId String?
-  name            String
-  description     String?
-  status          String            @default("pending")
-  assignedTo      String?
-  startedAt       DateTime?
-  completedAt     DateTime?
-  orderIndex      Int
-  lastViewedAt    DateTime?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  mechanic        User?             @relation("StageMechanic", fields: [assignedTo], references: [id], onUpdate: NoAction)
-  order           Order             @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  stageTemplate   StageTemplate?    @relation(fields: [stageTemplateId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  attachments     StageAttachment[]
-  comments        StageComment[]
+  id                       String                      @id @default(uuid())
+  orderId                  String
+  stageTemplateId          String?
+  name                     String
+  description              String?
+  status                   String                      @default("pending")
+  assignedTo               String?
+  startedAt                DateTime?
+  completedAt              DateTime?
+  orderIndex               Int
+  lastViewedAt             DateTime?
+  createdAt                DateTime                    @default(now())
+  updatedAt                DateTime                    @updatedAt
+  mechanic                 User?                       @relation("StageMechanic", fields: [assignedTo], references: [id], onUpdate: NoAction)
+  order                    Order                       @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  stageTemplate            StageTemplate?              @relation(fields: [stageTemplateId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  attachments              StageAttachment[]
+  comments                 StageComment[]
+  inventoryItems           OrderStageInventoryItem[]
 
   @@index([orderId])
   @@index([assignedTo])
@@ -198,24 +221,142 @@ model StageAttachment {
   @@map("stage_attachments")
 }
 
+// ============================================================================
+// МОДЕЛИ СКЛАДА И КОМПЛЕКТУЮЩИХ (РАСШИРЕННЫЕ)
+// ============================================================================
+
 model InventoryItem {
-  id          String               @id @default(uuid())
-  name        String
-  description String?
-  category    String
-  sku         String?              @unique
-  stock       Int                  @default(0)
-  unit        String               @default("шт")
-  price       Decimal?             @db.Decimal(10, 2)
-  isActive    Boolean              @default(true)
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  orderItems  OrderInventoryItem[]
+  id                  String                        @id @default(uuid())
+  name                String
+  description         String?
+  category            String                        // Категория: "engine", "transmission", "oil", "filter", "brakes", etc.
+  subcategory         String?                       // Подкатегория для детализации
+  sku                 String?                       @unique
+  oemNumber           String?                       // OEM номер производителя
+  manufacturerPartNumber String?                    // Артикул производителя
+  manufacturer        String?                       // Производитель детали
+  stock               Int                           @default(0)
+  minStock            Int                           @default(0) // Минимальный остаток для уведомлений
+  unit                String                        @default("шт")
+  price               Decimal?                      @db.Decimal(10, 2)
+  cost                Decimal?                      @db.Decimal(10, 2) // Себестоимость
+  isUniversal         Boolean                       @default(false) // Универсальная деталь (подходит для всех)
+  isActive            Boolean                       @default(true)
+  weight              Decimal?                      @db.Decimal(10, 3) // Вес в кг
+  location            String?                       // Место на складе (стеллаж/полка)
+  notes               String?                       @db.NVarChar(2000)
+  createdAt           DateTime                      @default(now())
+  updatedAt           DateTime                      @updatedAt
+  orderItems          OrderInventoryItem[]
+  compatibility       InventoryItemCompatibility[]  // Совместимость с моделями авто
+  stageTemplateItems  StageTemplateInventoryItem[]
+  orderStageItems     OrderStageInventoryItem[]
+  crossReferences     InventoryItemCrossReference[] @relation("FromItem")
+  referencedBy        InventoryItemCrossReference[] @relation("ToItem")
 
   @@index([category])
   @@index([sku])
+  @@index([oemNumber])
+  @@index([isUniversal])
+  @@index([manufacturer])
   @@map("inventory_items")
 }
+
+// Таблица совместимости комплектующих с моделями автомобилей
+model InventoryItemCompatibility {
+  id                  String              @id @default(uuid())
+  inventoryItemId     String
+  vehicleBrandId      String?             // Если null - подходит для всех брендов
+  vehicleModelId      String?             // Если null - подходит для всех моделей бренда
+  vehicleGenerationId String?             // Если null - подходит для всех поколений модели
+  yearFrom            Int?                // Год начала совместимости
+  yearTo              Int?                // Год окончания совместимости
+  notes               String?             // Примечания о совместимости
+  createdAt           DateTime            @default(now())
+  inventoryItem       InventoryItem       @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  vehicleBrand        VehicleBrand?       @relation(fields: [vehicleBrandId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vehicleModel        VehicleModel?       @relation(fields: [vehicleModelId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vehicleGeneration   VehicleGeneration?  @relation(fields: [vehicleGenerationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([inventoryItemId, vehicleBrandId, vehicleModelId, vehicleGenerationId])
+  @@index([inventoryItemId])
+  @@index([vehicleBrandId])
+  @@index([vehicleModelId])
+  @@index([vehicleGenerationId])
+  @@map("inventory_item_compatibility")
+}
+
+// Кросс-ссылки на аналоги и замены
+model InventoryItemCrossReference {
+  id                  String        @id @default(uuid())
+  fromItemId          String
+  toItemId            String
+  referenceType       String        // "replacement", "analog", "upgrade", "downgrade"
+  notes               String?
+  createdAt           DateTime      @default(now())
+  fromItem            InventoryItem @relation("FromItem", fields: [fromItemId], references: [id], onDelete: Cascade)
+  toItem              InventoryItem @relation("ToItem", fields: [toItemId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([fromItemId, toItemId])
+  @@index([fromItemId])
+  @@index([toItemId])
+  @@map("inventory_item_cross_references")
+}
+
+// ============================================================================
+// ПРИВЯЗКА КОМПЛЕКТУЮЩИХ К ШАБЛОНАМ ЭТАПОВ
+// ============================================================================
+
+// Шаблонные комплектующие, которые администратор рекомендует для этапа
+model StageTemplateInventoryItem {
+  id              String        @id @default(uuid())
+  stageTemplateId String
+  inventoryItemId String
+  isRequired      Boolean       @default(false) // Обязательное или опциональное
+  quantity        Int           @default(1)     // Рекомендуемое количество
+  notes           String?       // Примечания для администратора
+  createdAt       DateTime      @default(now())
+  stageTemplate   StageTemplate @relation(fields: [stageTemplateId], references: [id], onDelete: Cascade)
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+
+  @@unique([stageTemplateId, inventoryItemId])
+  @@index([stageTemplateId])
+  @@index([inventoryItemId])
+  @@map("stage_template_inventory_items")
+}
+
+// ============================================================================
+// КОМПЛЕКТУЮЩИЕ В КОНКРЕТНЫХ ЭТАПАХ ЗАКАЗОВ
+// ============================================================================
+
+// Комплектующие, предложенные администратором для этапа конкретного заказа
+model OrderStageInventoryItem {
+  id               String        @id @default(uuid())
+  orderStageId     String
+  inventoryItemId  String
+  quantity         Int           @default(1)
+  unitPrice        Decimal?      @db.Decimal(10, 2)
+  isRequired       Boolean       @default(false)
+  suggestedByAdmin Boolean       @default(true)  // Предложено администратором
+  selectedByClient Boolean       @default(false) // Выбрано клиентом
+  status           String        @default("pending") // "pending", "approved", "rejected", "installed"
+  clientNotes      String?       // Комментарий клиента
+  adminNotes       String?       // Комментарий администратора
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  orderStage       OrderStage    @relation(fields: [orderStageId], references: [id], onDelete: Cascade)
+  inventoryItem    InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([orderStageId, inventoryItemId])
+  @@index([orderStageId])
+  @@index([inventoryItemId])
+  @@index([status])
+  @@map("order_stage_inventory_items")
+}
+
+// ============================================================================
+// ОБЩИЕ КОМПЛЕКТУЮЩИЕ ЗАКАЗА (СТАРАЯ МОДЕЛЬ - ОСТАВЛЯЕМ ДЛЯ СОВМЕСТИМОСТИ)
+// ============================================================================
 
 model OrderInventoryItem {
   id              String        @id @default(uuid())
@@ -232,6 +373,10 @@ model OrderInventoryItem {
   @@index([inventoryItemId])
   @@map("order_inventory_items")
 }
+
+// ============================================================================
+// УВЕДОМЛЕНИЯ
+// ============================================================================
 
 model Notification {
   id        String    @id @default(uuid())

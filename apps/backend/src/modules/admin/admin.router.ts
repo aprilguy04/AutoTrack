@@ -271,5 +271,158 @@ router.delete("/service-templates/:id", async (req, res) => {
   }
 });
 
+// ============================================================================
+// УПРАВЛЕНИЕ КОМПЛЕКТУЮЩИМИ НА ЭТАПАХ
+// ============================================================================
+
+const suggestInventorySchema = z.object({
+  inventoryItemId: z.string(),
+  quantity: z.number().int().min(1).optional(),
+  isRequired: z.boolean().optional(),
+  adminNotes: z.string().optional(),
+});
+
+/**
+ * POST /api/admin/order-stages/:stageId/inventory - Предложить комплектующее для этапа
+ */
+router.post("/order-stages/:stageId/inventory", async (req, res) => {
+  try {
+    const { stageId } = req.params;
+    const data = suggestInventorySchema.parse(req.body);
+
+    const item = await adminService.suggestInventoryForOrderStage({
+      orderStageId: stageId,
+      ...data,
+    });
+
+    res.status(201).json({ item });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "Ошибка валидации", errors: error.errors });
+      return;
+    }
+    console.error("Suggest inventory error:", error);
+    res.status(500).json({ message: error.message || "Ошибка при добавлении комплектующего" });
+  }
+});
+
+/**
+ * GET /api/admin/order-stages/:stageId/inventory - Получить комплектующие этапа
+ */
+router.get("/order-stages/:stageId/inventory", async (req, res) => {
+  try {
+    const { stageId } = req.params;
+    const items = await adminService.getOrderStageInventoryItems(stageId);
+    res.json({ items });
+  } catch (error) {
+    console.error("Get stage inventory error:", error);
+    res.status(500).json({ message: "Ошибка при получении комплектующих" });
+  }
+});
+
+const updateStageInventorySchema = z.object({
+  quantity: z.number().int().min(1).optional(),
+  isRequired: z.boolean().optional(),
+  adminNotes: z.string().optional(),
+  status: z.enum(["pending", "approved", "rejected", "installed"]).optional(),
+});
+
+/**
+ * PATCH /api/admin/order-stage-inventory/:id - Обновить комплектующее этапа
+ */
+router.patch("/order-stage-inventory/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = updateStageInventorySchema.parse(req.body);
+
+    const item = await adminService.updateOrderStageInventoryItem(id, data);
+    res.json({ item });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "Ошибка валидации", errors: error.errors });
+      return;
+    }
+    console.error("Update stage inventory error:", error);
+    res.status(500).json({ message: "Ошибка при обновлении комплектующего" });
+  }
+});
+
+/**
+ * DELETE /api/admin/order-stage-inventory/:id - Удалить комплектующее из этапа
+ */
+router.delete("/order-stage-inventory/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await adminService.removeInventoryFromOrderStage(id);
+    res.json({ message: "Комплектующее удалено" });
+  } catch (error) {
+    console.error("Delete stage inventory error:", error);
+    res.status(500).json({ message: "Ошибка при удалении комплектующего" });
+  }
+});
+
+// ============================================================================
+// УПРАВЛЕНИЕ РЕКОМЕНДУЕМЫМИ КОМПЛЕКТУЮЩИМИ ДЛЯ ШАБЛОНОВ ЭТАПОВ
+// ============================================================================
+
+const addTemplateInventorySchema = z.object({
+  inventoryItemId: z.string(),
+  isRequired: z.boolean().optional(),
+  quantity: z.number().int().min(1).optional(),
+  notes: z.string().optional(),
+});
+
+/**
+ * POST /api/admin/stage-templates/:templateId/inventory - Добавить комплектующее к шаблону
+ */
+router.post("/stage-templates/:templateId/inventory", async (req, res) => {
+  try {
+    const { templateId } = req.params;
+    const data = addTemplateInventorySchema.parse(req.body);
+
+    const item = await adminService.addInventoryToStageTemplate({
+      stageTemplateId: templateId,
+      ...data,
+    });
+
+    res.status(201).json({ item });
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "Ошибка валидации", errors: error.errors });
+      return;
+    }
+    console.error("Add template inventory error:", error);
+    res.status(500).json({ message: "Ошибка при добавлении комплектующего" });
+  }
+});
+
+/**
+ * GET /api/admin/stage-templates/:templateId/inventory - Получить рекомендуемые комплектующие
+ */
+router.get("/stage-templates/:templateId/inventory", async (req, res) => {
+  try {
+    const { templateId } = req.params;
+    const items = await adminService.getStageTemplateSuggestedItems(templateId);
+    res.json({ items });
+  } catch (error) {
+    console.error("Get template inventory error:", error);
+    res.status(500).json({ message: "Ошибка при получении комплектующих" });
+  }
+});
+
+/**
+ * DELETE /api/admin/stage-template-inventory/:id - Удалить комплектующее из шаблона
+ */
+router.delete("/stage-template-inventory/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await adminService.removeInventoryFromStageTemplate(id);
+    res.json({ message: "Комплектующее удалено из шаблона" });
+  } catch (error) {
+    console.error("Delete template inventory error:", error);
+    res.status(500).json({ message: "Ошибка при удалении комплектующего" });
+  }
+});
+
 export const adminRouter = router;
 

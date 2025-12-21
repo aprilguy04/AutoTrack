@@ -89,13 +89,162 @@ export const adminService = {
   },
 
   /**
-   * Назначить комплектующие на этап (для выбора клиентом)
+   * Добавить рекомендуемое комплектующее к шаблону этапа
    */
-  async assignInventoryToStage(stageTemplateId: string, inventoryItemIds: string[]) {
-    // Эта функциональность может быть реализована через отдельную таблицу связи
-    // или через поле в StageTemplate. Пока оставим заглушку.
-    // В реальной системе это может быть many-to-many связь между StageTemplate и InventoryItem
-    return { message: "Функция в разработке" };
+  async addInventoryToStageTemplate(data: {
+    stageTemplateId: string;
+    inventoryItemId: string;
+    isRequired?: boolean;
+    quantity?: number;
+    notes?: string;
+  }) {
+    return prisma.stageTemplateInventoryItem.create({
+      data,
+      include: {
+        inventoryItem: true,
+        stageTemplate: true,
+      },
+    });
+  },
+
+  /**
+   * Удалить комплектующее из шаблона этапа
+   */
+  async removeInventoryFromStageTemplate(id: string) {
+    return prisma.stageTemplateInventoryItem.delete({
+      where: { id },
+    });
+  },
+
+  /**
+   * Получить рекомендуемые комплектующие для шаблона этапа
+   */
+  async getStageTemplateSuggestedItems(stageTemplateId: string) {
+    return prisma.stageTemplateInventoryItem.findMany({
+      where: { stageTemplateId },
+      include: {
+        inventoryItem: {
+          include: {
+            compatibility: {
+              include: {
+                vehicleBrand: true,
+                vehicleModel: true,
+                vehicleGeneration: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
+
+  /**
+   * Предложить комплектующие клиенту для конкретного этапа заказа
+   * Учитывает автомобиль клиента и показывает только совместимые детали
+   */
+  async suggestInventoryForOrderStage(data: {
+    orderStageId: string;
+    inventoryItemId: string;
+    quantity?: number;
+    isRequired?: boolean;
+    adminNotes?: string;
+  }) {
+    const stage = await prisma.orderStage.findUnique({
+      where: { id: data.orderStageId },
+      include: {
+        order: {
+          include: {
+            vehicleGeneration: {
+              include: {
+                model: {
+                  include: {
+                    brand: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!stage) {
+      throw new Error("Этап не найден");
+    }
+
+    // Получаем цену из комплектующего
+    const inventoryItem = await prisma.inventoryItem.findUnique({
+      where: { id: data.inventoryItemId },
+    });
+
+    if (!inventoryItem) {
+      throw new Error("Комплектующее не найдено");
+    }
+
+    return prisma.orderStageInventoryItem.create({
+      data: {
+        orderStageId: data.orderStageId,
+        inventoryItemId: data.inventoryItemId,
+        quantity: data.quantity || 1,
+        isRequired: data.isRequired || false,
+        adminNotes: data.adminNotes,
+        unitPrice: inventoryItem.price,
+        suggestedByAdmin: true,
+        status: "pending",
+      },
+      include: {
+        inventoryItem: true,
+      },
+    });
+  },
+
+  /**
+   * Обновить предложенное комплектующее
+   */
+  async updateOrderStageInventoryItem(id: string, data: {
+    quantity?: number;
+    isRequired?: boolean;
+    adminNotes?: string;
+    status?: string;
+  }) {
+    return prisma.orderStageInventoryItem.update({
+      where: { id },
+      data,
+      include: {
+        inventoryItem: true,
+      },
+    });
+  },
+
+  /**
+   * Удалить предложенное комплектующее из этапа
+   */
+  async removeInventoryFromOrderStage(id: string) {
+    return prisma.orderStageInventoryItem.delete({
+      where: { id },
+    });
+  },
+
+  /**
+   * Получить комплектующие для конкретного этапа заказа
+   */
+  async getOrderStageInventoryItems(orderStageId: string) {
+    return prisma.orderStageInventoryItem.findMany({
+      where: { orderStageId },
+      include: {
+        inventoryItem: {
+          include: {
+            compatibility: {
+              include: {
+                vehicleBrand: true,
+                vehicleModel: true,
+                vehicleGeneration: true,
+              },
+            },
+          },
+        },
+      },
+    });
   },
 
   /**
