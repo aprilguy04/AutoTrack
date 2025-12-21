@@ -31,6 +31,7 @@ export const Navbar = () => {
       baseLinks.push({ to: "/mechanic", label: "Задачи" });
     } else if (user.role === "admin") {
       baseLinks.push({ to: "/admin", label: "Панель" });
+      baseLinks.push({ to: "/admin/warehouse", label: "Склад" });
     }
 
     return baseLinks;

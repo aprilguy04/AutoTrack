@@ -6,6 +6,7 @@ import { CreateOrderPage } from "./pages/CreateOrderPage.tsx";
 import { HomePage } from "./pages/HomePage.tsx";
 import { LoginPage } from "./pages/LoginPage.tsx";
 import { MechanicPage } from "./pages/MechanicPage.tsx";
+import { WarehousePage } from "./pages/WarehousePage.tsx";
 import { Navbar } from "./shared/ui/Navbar.tsx";
 import { useAuthStore } from "./entities/user/store.js";
 import { ProtectedRoute } from "./shared/components/ProtectedRoute.tsx";
@@ -66,6 +67,14 @@ const App = () => {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/warehouse"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <WarehousePage />
               </ProtectedRoute>
             }
           />

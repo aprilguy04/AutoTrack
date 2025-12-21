@@ -7,6 +7,7 @@ import { Button } from "../shared/ui/Button.tsx";
 import { Card } from "../shared/ui/Card.tsx";
 import { StageTimeline } from "../features/stages/components/StageTimeline.tsx";
 import { StageDetailsDrawer } from "../features/stages/components/StageDetailsDrawer.tsx";
+import { StageInventoryManager } from "../features/admin/components/StageInventoryManager.tsx";
 import { useOrderStages } from "../features/stages/useOrderStages.ts";
 
 type StageFormState = {
@@ -353,6 +354,23 @@ export const AdminPage = () => {
                   </Button>
                 </form>
               </Card>
+
+              {activeStageId && (
+                <StageInventoryManager
+                  stageId={activeStageId}
+                  orderId={selectedOrder.id}
+                  vehicleInfo={
+                    selectedOrder.vehicleGeneration
+                      ? {
+                          vehicleBrandId: selectedOrder.vehicleGeneration.model?.brand?.id,
+                          vehicleModelId: selectedOrder.vehicleGeneration.model?.id,
+                          vehicleGenerationId: selectedOrder.vehicleGenerationId,
+                          vehicleYear: selectedOrder.vehicleYear,
+                        }
+                      : undefined
+                  }
+                />
+              )}
             </div>
           </div>
         </div>

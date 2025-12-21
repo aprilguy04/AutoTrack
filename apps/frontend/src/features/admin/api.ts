@@ -14,6 +14,35 @@ export interface AdminOrder extends Order {
     inProgress: number;
   };
   isNewForAdmin: boolean;
+  vehicleGenerationId?: string;
+}
+
+export interface OrderStageInventoryItem {
+  id: string;
+  orderStageId: string;
+  inventoryItemId: string;
+  quantity: number;
+  unitPrice?: number;
+  isRequired: boolean;
+  suggestedByAdmin: boolean;
+  selectedByClient: boolean;
+  status: string;
+  clientNotes?: string;
+  adminNotes?: string;
+  createdAt: string;
+  updatedAt: string;
+  inventoryItem: {
+    id: string;
+    name: string;
+    description?: string;
+    category: string;
+    sku?: string;
+    oemNumber?: string;
+    manufacturer?: string;
+    price?: number;
+    stock: number;
+    unit: string;
+  };
 }
 
 export const adminApi = {
@@ -45,6 +74,36 @@ export const adminApi = {
   },
   reorderStages: async (orderId: string, stages: Array<{ stageId: string; orderIndex: number }>) => {
     await api.post(`/admin/orders/${orderId}/stages/reorder`, { stages });
+  },
+  // Управление комплектующими на этапах
+  suggestInventoryForStage: async (
+    stageId: string,
+    payload: { inventoryItemId: string; quantity?: number; isRequired?: boolean; adminNotes?: string },
+  ): Promise<{ item: OrderStageInventoryItem }> => {
+    const response = await api.post<{ item: OrderStageInventoryItem }>(
+      `/admin/order-stages/${stageId}/inventory`,
+      payload
+    );
+    return response.data;
+  },
+  getStageInventoryItems: async (stageId: string): Promise<{ items: OrderStageInventoryItem[] }> => {
+    const response = await api.get<{ items: OrderStageInventoryItem[] }>(
+      `/admin/order-stages/${stageId}/inventory`
+    );
+    return response.data;
+  },
+  updateStageInventoryItem: async (
+    itemId: string,
+    payload: { quantity?: number; isRequired?: boolean; adminNotes?: string; status?: string },
+  ): Promise<{ item: OrderStageInventoryItem }> => {
+    const response = await api.patch<{ item: OrderStageInventoryItem }>(
+      `/admin/order-stage-inventory/${itemId}`,
+      payload
+    );
+    return response.data;
+  },
+  removeStageInventoryItem: async (itemId: string): Promise<void> => {
+    await api.delete(`/admin/order-stage-inventory/${itemId}`);
   },
 };
 
