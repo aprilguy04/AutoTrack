@@ -5,11 +5,14 @@ export const useAdminOrders = () =>
   useQuery<AdminOrder[]>({
     queryKey: ["orders", "admin"],
     queryFn: async () => {
+      console.log('[Admin Orders] Fetching orders...');
       const { orders } = await adminApi.getOrders();
+      console.log('[Admin Orders] Received orders:', orders.length);
       return orders;
     },
-    initialData: [],
     staleTime: 30000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: false,
   });
 
 export const useMechanics = () =>

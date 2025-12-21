@@ -33,9 +33,10 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
   });
 
   // Получить совместимые комплектующие
-  const { data: compatibleItemsData } = useQuery({
+  const { data: compatibleItemsData, isLoading: isLoadingCompatible, error: compatibleError } = useQuery({
     queryKey: ["warehouse", "compatible", vehicleInfo],
     queryFn: () => {
+      console.log('Fetching compatible items, vehicleInfo:', vehicleInfo);
       if (!vehicleInfo) {
         return warehouseApi.getInventoryItems({ isActive: true });
       }
@@ -46,6 +47,7 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
         vehicleYear: vehicleInfo.vehicleYear,
       });
     },
+    enabled: !!stageId,
   });
 
   const addItemMutation = useMutation({
@@ -110,9 +112,12 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
     });
   };
 
-  const totalCost = stageItems.reduce((sum, item) => {
-    return sum + (item.unitPrice ? Number(item.unitPrice) * item.quantity : 0);
-  }, 0);
+  // Считаем только обязательные комплектующие и те, что выбрал клиент
+  const totalCost = stageItems
+    .filter((item) => item.isRequired || item.selectedByClient || item.status === "approved")
+    .reduce((sum, item) => {
+      return sum + (item.unitPrice ? Number(item.unitPrice) * item.quantity : 0);
+    }, 0);
 
   return (
     <Card variant="glass">
@@ -139,8 +144,11 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
                 value={selectedItemId}
                 onChange={(e) => setSelectedItemId(e.target.value)}
                 className="w-full rounded-xl bg-dark-900 border border-dark-700 text-dark-50 px-3 py-2 text-sm"
+                disabled={isLoadingCompatible}
               >
-                <option value="">-- Выберите --</option>
+                <option value="">
+                  {isLoadingCompatible ? "Загрузка..." : availableItems.length === 0 ? "Нет доступных комплектующих" : "-- Выберите --"}
+                </option>
                 {availableItems.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name} {item.manufacturer && `(${item.manufacturer})`} • {item.stock} {item.unit} на складе
@@ -148,6 +156,16 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
                   </option>
                 ))}
               </select>
+              {compatibleError && (
+                <p className="text-xs text-red-400">Ошибка загрузки комплектующих</p>
+              )}
+              {!isLoadingCompatible && availableItems.length === 0 && (
+                <p className="text-xs text-yellow-400">
+                  {compatibleItems.length === 0
+                    ? "В базе нет комплектующих. Добавьте их через раздел 'Склад'"
+                    : "Все комплектующие уже добавлены к этому этапу"}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -203,14 +221,19 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
 
         {stageItems.length > 0 ? (
           <div className="space-y-2">
-            {stageItems.map((item) => (
+            {stageItems.map((item) => {
+              const isApproved = item.status === "approved" || item.selectedByClient;
+              const isRejected = item.status === "rejected";
+              const isPending = item.status === "pending";
+
+              return (
               <div
                 key={item.id}
                 className={clsx(
                   "p-3 rounded-xl border transition-all",
-                  item.selectedByClient
-                    ? "bg-emerald-900/20 border-emerald-700/50"
-                    : "bg-dark-800/70 border-dark-700"
+                  isApproved && "bg-emerald-900/20 border-emerald-700/50",
+                  isRejected && "bg-red-900/20 border-red-700/50 opacity-75",
+                  isPending && "bg-dark-800/70 border-dark-700"
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -222,9 +245,13 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
                           Обязательно
                         </span>
                       )}
-                      {item.selectedByClient ? (
+                      {isApproved ? (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-emerald-900/30 border border-emerald-700/50 text-xs text-emerald-400">
                           ✓ Выбрано клиентом
+                        </span>
+                      ) : isRejected ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-red-900/30 border border-red-700/50 text-xs text-red-400">
+                          ✗ Отклонено клиентом
                         </span>
                       ) : (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-yellow-900/30 border border-yellow-700/50 text-xs text-yellow-400">
@@ -262,7 +289,8 @@ export const StageInventoryManager = ({ stageId, orderId, vehicleInfo }: StageIn
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
 
             {totalCost > 0 && (
               <div className="mt-4 p-3 rounded-xl bg-primary-900/20 border border-primary-700/50 flex items-center justify-between">

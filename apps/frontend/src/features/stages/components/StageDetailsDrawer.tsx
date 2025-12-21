@@ -7,11 +7,18 @@ import { Card } from "../../../shared/ui/Card.js";
 import { ImageGallery } from "../../../shared/ui/ImageGallery.js";
 import { useAuthStore } from "../../../entities/user/store.js";
 import { StageInventoryClient } from "./StageInventoryClient.tsx";
+import { StageInventoryManager } from "../../admin/components/StageInventoryManager.tsx";
 
 type StageDetailsDrawerProps = {
   stageId: string | null;
   onClose: () => void;
   allowUpdates?: boolean;
+  vehicleInfo?: {
+    vehicleBrandId?: string;
+    vehicleModelId?: string;
+    vehicleGenerationId?: string;
+    vehicleYear?: number;
+  };
 };
 
 const STATUS_OPTIONS = [
@@ -30,7 +37,7 @@ async function fileToBase64(file: File): Promise<string> {
   });
 }
 
-export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false }: StageDetailsDrawerProps) => {
+export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false, vehicleInfo }: StageDetailsDrawerProps) => {
   const { data: stage, isLoading } = useStageDetails(stageId);
   const { updateStatus, addComment, addAttachment, markViewed } = useStageMutations();
   const [comment, setComment] = useState("");
@@ -205,6 +212,14 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false }: S
 
               {user?.role === "client" && stage.order && (
                 <StageInventoryClient stageId={stageId} orderId={stage.order.id} />
+              )}
+
+              {user?.role === "admin" && stage.order && (
+                <StageInventoryManager
+                  stageId={stageId}
+                  orderId={stage.order.id}
+                  vehicleInfo={vehicleInfo}
+                />
               )}
             </>
           )}

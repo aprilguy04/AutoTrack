@@ -13,7 +13,8 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "seed:inventory": "tsx src/scripts/seed-inventory.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",

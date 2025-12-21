@@ -218,7 +218,7 @@ export const AdminPage = () => {
       </Card>
 
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-start justify-center p-6">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-start justify-center p-6">
           <div className="w-full max-w-5xl bg-dark-900 rounded-3xl border border-dark-700 shadow-2xl flex flex-col max-h-full">
             <div className="p-6 border-b border-dark-700 flex items-start justify-between gap-4">
               <div>
@@ -387,7 +387,20 @@ export const AdminPage = () => {
         </div>
       )}
 
-      <StageDetailsDrawer stageId={activeStageId} onClose={() => setActiveStageId(null)} />
+      <StageDetailsDrawer
+        stageId={activeStageId}
+        onClose={() => setActiveStageId(null)}
+        vehicleInfo={
+          selectedOrder?.vehicleGeneration
+            ? {
+                vehicleBrandId: selectedOrder.vehicleGeneration.model?.brand?.id,
+                vehicleModelId: selectedOrder.vehicleGeneration.model?.id,
+                vehicleGenerationId: selectedOrder.vehicleGenerationId,
+                vehicleYear: selectedOrder.vehicleYear,
+              }
+            : undefined
+        }
+      />
     </div>
   );
 };
