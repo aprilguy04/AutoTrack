@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { clsx } from "clsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +18,9 @@ type StageFormState = {
   orderIndex: number;
 };
 
+type FilterStatus = "all" | "new" | "in_progress" | "completed";
+type SortOption = "newest" | "oldest" | "progress";
+
 export const AdminPage = () => {
   const queryClient = useQueryClient();
   const { data: orders = [], isLoading } = useAdminOrders();
@@ -26,6 +29,9 @@ export const AdminPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
   const [stageForm, setStageForm] = useState<StageFormState>({ name: "", description: "", assignedTo: "", orderIndex: 0 });
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: orderStages = [], isLoading: isStagesLoading } = useOrderStages(
     selectedOrder?.id ?? "",
@@ -70,6 +76,41 @@ export const AdminPage = () => {
   const completedStages = orders.reduce((acc, order) => acc + (order.stats?.done ?? 0), 0);
   const inProgressOrders = orders.filter((order) => order.status === "in_progress").length;
   const newOrders = orders.filter((order) => order.isNewForAdmin).length;
+
+  // Фильтрация и сортировка заказов
+  const filteredOrders = useMemo(() => {
+    return orders
+      .filter((order) => {
+        // Фильтр по статусу
+        if (filterStatus === "new") return order.isNewForAdmin;
+        if (filterStatus === "in_progress") return order.status === "in_progress";
+        if (filterStatus === "completed") return order.status === "completed";
+        return true;
+      })
+      .filter((order) => {
+        // Поиск
+        if (!searchQuery.trim()) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+          order.title?.toLowerCase().includes(query) ||
+          order.customer?.fullName?.toLowerCase().includes(query) ||
+          order.vehicleInfo?.toLowerCase().includes(query)
+        );
+      })
+      .sort((a, b) => {
+        // Сортировка
+        if (sortOption === "oldest") {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+        if (sortOption === "progress") {
+          const progressA = a.stats?.total ? (a.stats.done ?? 0) / a.stats.total : 0;
+          const progressB = b.stats?.total ? (b.stats.done ?? 0) / b.stats.total : 0;
+          return progressB - progressA;
+        }
+        // По умолчанию: сначала новые
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+  }, [orders, filterStatus, searchQuery, sortOption]);
 
   const handleCreateStage = (event: React.FormEvent) => {
     event.preventDefault();
@@ -157,17 +198,67 @@ export const AdminPage = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-dark-50">Заказы</h2>
-            <span className="text-sm text-dark-400">{orders.length} активных</span>
+            <span className="text-sm text-dark-400">{filteredOrders.length} из {orders.length}</span>
           </div>
+
+          {/* Фильтры и сортировка */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Вкладки статусов */}
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { value: "all" as const, label: "Все", count: orders.length },
+                { value: "new" as const, label: "Новые", count: newOrders },
+                { value: "in_progress" as const, label: "В работе", count: inProgressOrders },
+                { value: "completed" as const, label: "Завершённые", count: orders.filter(o => o.status === "completed").length },
+              ].map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => setFilterStatus(tab.value)}
+                  className={clsx(
+                    "px-3 py-1.5 rounded-xl text-sm font-medium transition-all",
+                    filterStatus === tab.value
+                      ? "bg-primary-600 text-white"
+                      : "bg-dark-800 text-dark-300 hover:bg-dark-700 hover:text-dark-100"
+                  )}
+                >
+                  {tab.label}
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded-lg bg-dark-900/50 text-xs">
+                    {tab.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Поиск и сортировка */}
+            <div className="flex-1 flex gap-3">
+              <input
+                type="text"
+                placeholder="Поиск по названию, клиенту, авто..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 min-w-0 rounded-xl bg-dark-800 border border-dark-700 text-dark-50 px-3 py-1.5 text-sm placeholder:text-dark-500 focus:border-primary-500 focus:outline-none"
+              />
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                className="rounded-xl bg-dark-800 border border-dark-700 text-dark-50 px-3 py-1.5 text-sm focus:border-primary-500 focus:outline-none"
+              >
+                <option value="newest">Сначала новые</option>
+                <option value="oldest">Сначала старые</option>
+                <option value="progress">По прогрессу</option>
+              </select>
+            </div>
+          </div>
+
           {isLoading ? (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="skeleton h-20 w-full rounded-xl" />
               ))}
             </div>
-          ) : orders.length ? (
+          ) : filteredOrders.length ? (
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {orders.map((order) => {
+              {filteredOrders.map((order) => {
                 const progress = order.stats?.total ? Math.round(((order.stats.done ?? 0) / order.stats.total) * 100) : 0;
                 return (
                   <div
@@ -211,6 +302,23 @@ export const AdminPage = () => {
                   </div>
                 );
               })}
+            </div>
+          ) : orders.length > 0 ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-3">🔍</div>
+              <p className="text-lg font-medium text-dark-300">Ничего не найдено</p>
+              <p className="text-sm text-dark-400 mt-2">Попробуйте изменить фильтры или поисковый запрос</p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-4"
+                onClick={() => {
+                  setFilterStatus("all");
+                  setSearchQuery("");
+                }}
+              >
+                Сбросить фильтры
+              </Button>
             </div>
           ) : (
             <div className="text-center text-dark-400 py-6">Активных заказов нет</div>

@@ -180,6 +180,84 @@ export async function getUserById(userId: string): Promise<AuthUser | null> {
   };
 }
 
+/**
+ * Обновление профиля пользователя
+ */
+export async function updateUserProfile(
+  userId: string,
+  data: { fullName?: string; phone?: string; email?: string },
+): Promise<AuthUser> {
+  // Если меняется email, проверяем уникальность
+  if (data.email) {
+    const existing = await prisma.user.findFirst({
+      where: {
+        email: data.email,
+        id: { not: userId },
+      },
+    });
+
+    if (existing) {
+      throw new Error("Пользователь с таким email уже существует");
+    }
+  }
+
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      ...(data.fullName && { fullName: data.fullName }),
+      ...(data.phone !== undefined && { phone: data.phone }),
+      ...(data.email && { email: data.email }),
+    },
+  });
+
+  return {
+    id: user.id,
+    email: user.email,
+    fullName: user.fullName,
+    role: user.role as UserRole,
+    phone: user.phone,
+  };
+}
+
+/**
+ * Смена пароля пользователя
+ */
+export async function changeUserPassword(
+  userId: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new Error("Пользователь не найден");
+  }
+
+  const isValid = await verifyPassword(currentPassword, user.passwordHash);
+  if (!isValid) {
+    throw new Error("Неверный текущий пароль");
+  }
+
+  const newPasswordHash = await hashPassword(newPassword);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash: newPasswordHash },
+  });
+}
+
+/**
+ * Удаление аккаунта пользователя (soft delete)
+ */
+export async function deleteUserAccount(userId: string): Promise<void> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: { isActive: false },
+  });
+}
+
 
 
 
