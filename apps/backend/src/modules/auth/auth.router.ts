@@ -5,22 +5,10 @@
  * POST /api/auth/logout - выход
  * GET /api/auth/me - текущий пользователь
  * POST /api/auth/refresh - обновление токена
- * PATCH /api/auth/profile - обновление профиля
- * POST /api/auth/change-password - смена пароля
- * DELETE /api/auth/account - удаление аккаунта
  */
 import { Router } from "express";
 import { z } from "zod";
-import {
-  loginUser,
-  registerUser,
-  getUserById,
-  verifyToken,
-  generateAccessToken,
-  updateUserProfile,
-  changeUserPassword,
-  deleteUserAccount,
-} from "./auth.service.js";
+import { loginUser, registerUser, getUserById, verifyToken, generateAccessToken } from "./auth.service.js";
 import { authenticateToken } from "../../middleware/auth.middleware.js";
 
 const router = Router();
@@ -40,17 +28,6 @@ const loginSchema = z.object({
 
 const refreshSchema = z.object({
   refreshToken: z.string(),
-});
-
-const updateProfileSchema = z.object({
-  fullName: z.string().min(2, "Имя должно содержать минимум 2 символа").optional(),
-  phone: z.string().optional(),
-  email: z.string().email("Некорректный email").optional(),
-});
-
-const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, "Текущий пароль обязателен"),
-  newPassword: z.string().min(6, "Новый пароль должен содержать минимум 6 символов"),
 });
 
 /**
@@ -227,84 +204,6 @@ router.post("/refresh", async (req, res) => {
     }
 
     res.status(401).json({ message: "Ошибка при обновлении токена" });
-  }
-});
-
-/**
- * Обновление профиля пользователя
- */
-router.patch("/profile", authenticateToken, async (req, res) => {
-  try {
-    const data = updateProfileSchema.parse(req.body);
-
-    const user = await updateUserProfile(req.user!.id, data);
-
-    res.json({
-      message: "Профиль успешно обновлён",
-      user,
-    });
-  } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({
-        message: "Ошибка валидации",
-        errors: error.errors,
-      });
-      return;
-    }
-
-    if (error.message === "Пользователь с таким email уже существует") {
-      res.status(409).json({ message: error.message });
-      return;
-    }
-
-    console.error("Update profile error:", error);
-    res.status(500).json({ message: "Ошибка при обновлении профиля" });
-  }
-});
-
-/**
- * Смена пароля
- */
-router.post("/change-password", authenticateToken, async (req, res) => {
-  try {
-    const data = changePasswordSchema.parse(req.body);
-
-    await changeUserPassword(req.user!.id, data.currentPassword, data.newPassword);
-
-    res.json({ message: "Пароль успешно изменён" });
-  } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({
-        message: "Ошибка валидации",
-        errors: error.errors,
-      });
-      return;
-    }
-
-    if (error.message === "Неверный текущий пароль") {
-      res.status(400).json({ message: error.message });
-      return;
-    }
-
-    console.error("Change password error:", error);
-    res.status(500).json({ message: "Ошибка при смене пароля" });
-  }
-});
-
-/**
- * Удаление аккаунта
- */
-router.delete("/account", authenticateToken, async (req, res) => {
-  try {
-    await deleteUserAccount(req.user!.id);
-
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
-
-    res.json({ message: "Аккаунт успешно удалён" });
-  } catch (error) {
-    console.error("Delete account error:", error);
-    res.status(500).json({ message: "Ошибка при удалении аккаунта" });
   }
 });
 

@@ -29,7 +29,7 @@ export const stagesService = {
       orderIndex = (aggregate._max.orderIndex ?? -1) + 1;
     }
 
-    const stage = await prisma.orderStage.create({
+    return prisma.orderStage.create({
       data: {
         orderId,
         name: data.name,
@@ -48,28 +48,6 @@ export const stagesService = {
         },
       },
     });
-
-    // Уведомляем механика о новом назначенном этапе
-    if (data.assignedTo) {
-      try {
-        await notificationsService.create({
-          userId: data.assignedTo,
-          orderId,
-          type: "stage_assigned",
-          title: "Новый этап назначен",
-          message: `Вам назначен этап "${data.name}" для заказа "${order.title}"`,
-          metadata: {
-            stageId: stage.id,
-            stageName: data.name,
-            orderTitle: order.title,
-          },
-        });
-      } catch (err) {
-        console.error("Failed to notify mechanic about new stage:", err);
-      }
-    }
-
-    return stage;
   },
 
   /**
@@ -92,8 +70,6 @@ export const stagesService = {
     }
 
     const updatePayload: any = { ...data };
-    const isNewAssignment = data.assignedTo !== undefined && data.assignedTo !== existing.assignedTo && data.assignedTo !== null;
-
     if (data.assignedTo !== undefined && data.assignedTo !== existing.assignedTo) {
       updatePayload.assignedTo = data.assignedTo;
       updatePayload.lastViewedAt = null;
@@ -113,26 +89,6 @@ export const stagesService = {
       },
     });
 
-    // Уведомляем механика о назначении на существующий этап
-    if (isNewAssignment && data.assignedTo) {
-      try {
-        await notificationsService.create({
-          userId: data.assignedTo,
-          orderId: existing.orderId,
-          type: "stage_assigned",
-          title: "Этап назначен вам",
-          message: `Вам назначен этап "${existing.name}" для заказа "${existing.order.title}"`,
-          metadata: {
-            stageId,
-            stageName: existing.name,
-            orderTitle: existing.order.title,
-          },
-        });
-      } catch (err) {
-        console.error("Failed to notify mechanic about stage assignment:", err);
-      }
-    }
-
     if (data.status && data.status !== existing.status) {
       if (data.status === "done" && existing.status !== "done") {
         try {
@@ -140,9 +96,9 @@ export const stagesService = {
             userId: existing.order.customerId,
             orderId: existing.orderId,
             type: "stage_done",
-            title: `Этап "${existing.name}" завершён`,
-            message: `Заказ: ${existing.order.title}`,
-            metadata: { stageId, stageName: existing.name, orderTitle: existing.order.title },
+            title: "Этап завершен",
+            message: `Этап "${existing.name}" завершен`,
+            metadata: { stageId },
           });
         } catch (err) {
           console.warn("Failed to create stage_done notification (admin):", err);
@@ -169,9 +125,8 @@ export const stagesService = {
             userId: existing.order.customerId,
             orderId: existing.orderId,
             type: "order_completed",
-            title: `Заказ "${existing.order.title}" завершён`,
-            message: "Все этапы ремонта выполнены",
-            metadata: { orderTitle: existing.order.title },
+            title: "Заказ завершен",
+            message: "Все этапы заказа завершены",
           });
         } catch (err) {
           console.warn("Failed to create order_completed notification (admin):", err);
@@ -379,9 +334,9 @@ export const stagesService = {
           userId: stage.order.customerId,
           orderId: stage.orderId,
           type: "stage_done",
-          title: `Этап "${stage.name}" завершён`,
-          message: `Заказ: ${stage.order.title}`,
-          metadata: { stageId, stageName: stage.name, orderTitle: stage.order.title },
+          title: "Этап завершен",
+          message: `Этап "${stage.name}" завершен`,
+          metadata: { stageId },
         });
       } catch (err) {
         console.warn("Failed to create stage_done notification:", err);
@@ -409,9 +364,8 @@ export const stagesService = {
           userId: stage.order.customerId,
           orderId: stage.orderId,
           type: "order_completed",
-          title: `Заказ "${stage.order.title}" завершён`,
-          message: "Все этапы ремонта выполнены",
-          metadata: { orderTitle: stage.order.title },
+          title: "Заказ завершен",
+          message: "Все этапы заказа завершены",
         });
       } catch (err) {
         console.warn("Failed to create order_completed notification:", err);

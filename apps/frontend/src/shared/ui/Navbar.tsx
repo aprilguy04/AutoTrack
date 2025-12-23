@@ -72,13 +72,10 @@ export const Navbar = () => {
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-3">
                   <NotificationsBell />
-                  <Link
-                    to="/profile"
-                    className="text-sm text-dark-300 hover:text-primary-400 transition-colors"
-                  >
+                  <span className="text-sm text-dark-300">
                     {user.fullName}
                     <span className="ml-2 text-xs text-primary-400">({user.role})</span>
-                  </Link>
+                  </span>
                   <Button variant="outline" size="sm" onClick={handleLogout}>
                     Выйти
                   </Button>

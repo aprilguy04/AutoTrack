@@ -31,6 +31,11 @@ export const HomePage = () => {
               Начать отслеживание →
             </Button>
           </Link>
+          <Link to="/mechanic">
+            <Button variant="outline" size="lg" className="animate-scale-in">
+              Панель механика
+            </Button>
+          </Link>
         </div>
       </section>
 

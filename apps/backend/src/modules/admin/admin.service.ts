@@ -4,7 +4,6 @@
 import { prisma } from "../../db/prisma.js";
 import { ordersService } from "../orders/orders.service.js";
 import { stagesService } from "../stages/stages.service.js";
-import { notificationsService } from "../notifications/notifications.service.js";
 
 export const adminService = {
   /**
@@ -182,7 +181,7 @@ export const adminService = {
       throw new Error("Комплектующее не найдено");
     }
 
-    const suggestion = await prisma.orderStageInventoryItem.create({
+    return prisma.orderStageInventoryItem.create({
       data: {
         orderStageId: data.orderStageId,
         inventoryItemId: data.inventoryItemId,
@@ -197,28 +196,6 @@ export const adminService = {
         inventoryItem: true,
       },
     });
-
-    // Уведомляем клиента о предложенном комплектующем
-    try {
-      await notificationsService.create({
-        userId: stage.order.customerId,
-        orderId: stage.orderId,
-        type: "inventory_suggested",
-        title: "Предложены комплектующие",
-        message: `Администратор предложил "${inventoryItem.name}" для этапа "${stage.name}"`,
-        metadata: {
-          stageId: stage.id,
-          stageName: stage.name,
-          orderTitle: stage.order.title,
-          inventoryItemName: inventoryItem.name,
-          quantity: data.quantity || 1,
-        },
-      });
-    } catch (err) {
-      console.error("Failed to notify client about inventory suggestion:", err);
-    }
-
-    return suggestion;
   },
 
   /**
