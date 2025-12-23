@@ -6,10 +6,16 @@ import { Button } from "../shared/ui/Button.tsx";
 import { Card } from "../shared/ui/Card.tsx";
 import { StageDetailsDrawer } from "../features/stages/components/StageDetailsDrawer.tsx";
 
+type FilterStatus = "all" | "new" | "in_progress" | "pending";
+type SortOption = "newest" | "oldest" | "order";
+
 export const MechanicPage = () => {
   const { data: orders = [], isLoading } = useAssignedOrders();
   const { updateStatus } = useStageMutations();
   const [activeStageId, setActiveStageId] = useState<string | null>(null);
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const tasks = useMemo(() => {
     return orders.flatMap((order) =>
@@ -20,9 +26,43 @@ export const MechanicPage = () => {
           orderTitle: order.title,
           vehicle: order.vehicleInfo || order.title,
           stage,
+          createdAt: stage.createdAt,
         })),
     );
   }, [orders]);
+
+  // Фильтрация и сортировка задач
+  const filteredTasks = useMemo(() => {
+    return tasks
+      .filter((task) => {
+        // Фильтр по статусу
+        if (filterStatus === "new") return !task.stage.lastViewedAt;
+        if (filterStatus === "in_progress") return task.stage.status === "in_progress";
+        if (filterStatus === "pending") return task.stage.status === "pending";
+        return true;
+      })
+      .filter((task) => {
+        // Поиск
+        if (!searchQuery.trim()) return true;
+        const query = searchQuery.toLowerCase();
+        return (
+          task.stage.name?.toLowerCase().includes(query) ||
+          task.orderTitle?.toLowerCase().includes(query) ||
+          task.vehicle?.toLowerCase().includes(query)
+        );
+      })
+      .sort((a, b) => {
+        // Сортировка
+        if (sortOption === "oldest") {
+          return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+        }
+        if (sortOption === "order") {
+          return (a.stage.orderIndex ?? 0) - (b.stage.orderIndex ?? 0);
+        }
+        // По умолчанию: сначала новые
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      });
+  }, [tasks, filterStatus, searchQuery, sortOption]);
 
   const inProgressCount = tasks.filter((task) => task.stage.status === "in_progress").length;
   const pendingCount = tasks.filter((task) => task.stage.status === "pending").length;
@@ -71,6 +111,59 @@ export const MechanicPage = () => {
         </div>
       </div>
 
+      {/* Фильтры и сортировка */}
+      {tasks.length > 0 && (
+        <Card variant="glass">
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Вкладки статусов */}
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { value: "all" as const, label: "Все", count: tasks.length },
+                { value: "new" as const, label: "Новые", count: newTasks },
+                { value: "in_progress" as const, label: "В работе", count: inProgressCount },
+                { value: "pending" as const, label: "Ожидают", count: pendingCount },
+              ].map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => setFilterStatus(tab.value)}
+                  className={clsx(
+                    "px-3 py-1.5 rounded-xl text-sm font-medium transition-all",
+                    filterStatus === tab.value
+                      ? "bg-primary-600 text-white"
+                      : "bg-dark-800 text-dark-300 hover:bg-dark-700 hover:text-dark-100"
+                  )}
+                >
+                  {tab.label}
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded-lg bg-dark-900/50 text-xs">
+                    {tab.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Поиск и сортировка */}
+            <div className="flex-1 flex gap-3">
+              <input
+                type="text"
+                placeholder="Поиск по этапу, заказу, авто..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 min-w-0 rounded-xl bg-dark-800 border border-dark-700 text-dark-50 px-3 py-1.5 text-sm placeholder:text-dark-500 focus:border-primary-500 focus:outline-none"
+              />
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                className="rounded-xl bg-dark-800 border border-dark-700 text-dark-50 px-3 py-1.5 text-sm focus:border-primary-500 focus:outline-none"
+              >
+                <option value="newest">Сначала новые</option>
+                <option value="oldest">Сначала старые</option>
+                <option value="order">По порядку</option>
+              </select>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
@@ -83,9 +176,9 @@ export const MechanicPage = () => {
             </Card>
           ))}
         </div>
-      ) : tasks.length ? (
+      ) : filteredTasks.length ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tasks.map((task, index) => (
+          {filteredTasks.map((task, index) => (
             <Card
               key={task.stage.id}
               variant="glass"
@@ -147,6 +240,24 @@ export const MechanicPage = () => {
             </Card>
           ))}
         </div>
+      ) : tasks.length > 0 ? (
+        <Card variant="glass" className="text-center py-8">
+          <div className="space-y-3">
+            <div className="text-4xl">🔍</div>
+            <h3 className="text-xl font-bold text-dark-50">Ничего не найдено</h3>
+            <p className="text-dark-400">Попробуйте изменить фильтры или поисковый запрос</p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setFilterStatus("all");
+                setSearchQuery("");
+              }}
+            >
+              Сбросить фильтры
+            </Button>
+          </div>
+        </Card>
       ) : (
         <Card variant="glass" className="text-center py-12">
           <div className="space-y-4">

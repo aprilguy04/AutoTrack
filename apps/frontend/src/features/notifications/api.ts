@@ -1,5 +1,11 @@
 import { api } from "../../shared/api/client.js";
 
+export interface NotificationMetadata {
+  stageId?: string;
+  stageName?: string;
+  orderTitle?: string;
+}
+
 export interface Notification {
   id: string;
   title: string;
@@ -9,6 +15,7 @@ export interface Notification {
   isRead: boolean;
   createdAt: string;
   orderId?: string | null;
+  metadata?: string | null;
 }
 
 export const notificationsApi = {

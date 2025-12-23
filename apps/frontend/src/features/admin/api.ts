@@ -105,5 +105,8 @@ export const adminApi = {
   removeStageInventoryItem: async (itemId: string): Promise<void> => {
     await api.delete(`/admin/order-stage-inventory/${itemId}`);
   },
+  deleteStage: async (orderId: string, stageId: string): Promise<void> => {
+    await api.delete(`/admin/orders/${orderId}/stages/${stageId}`);
+  },
 };
 

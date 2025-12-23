@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { warehouseApi, type AddCompatibilityInput } from "../api.ts";
 import { vehiclesApi } from "../../vehicles/api.ts";
@@ -90,7 +91,7 @@ export const CompatibilityManager = ({ itemId, onClose }: CompatibilityManagerPr
     });
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-center justify-center p-6">
       <Card variant="glass" className="w-full max-w-2xl">
         <div className="space-y-6">
@@ -236,6 +237,7 @@ export const CompatibilityManager = ({ itemId, onClose }: CompatibilityManagerPr
           </form>
         </div>
       </Card>
-    </div>
+    </div>,
+    document.body
   );
 };

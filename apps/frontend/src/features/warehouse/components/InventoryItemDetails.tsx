@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { warehouseApi } from "../api.ts";
 import { Button } from "../../../shared/ui/Button.tsx";
@@ -31,16 +32,17 @@ export const InventoryItemDetails = ({ itemId, onClose, onEdit, onDelete }: Inve
   const item = itemData?.item;
 
   if (isLoading || !item) {
-    return (
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
+    return createPortal(
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center">
         <div className="text-dark-400">Загрузка...</div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
   const stockStatus = item.stock <= item.minStock ? "low" : "normal";
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-start justify-center p-6 overflow-y-auto">
       <div className="w-full max-w-5xl bg-dark-900 rounded-3xl border border-dark-700 shadow-2xl my-8">
         <div className="p-6 border-b border-dark-700 flex items-start justify-between gap-4">
@@ -310,6 +312,7 @@ export const InventoryItemDetails = ({ itemId, onClose, onEdit, onDelete }: Inve
 
       {/* Модальное окно управления совместимостью */}
       {showCompatibility && <CompatibilityManager itemId={itemId} onClose={() => setShowCompatibility(false)} />}
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -296,6 +296,48 @@ router.patch("/inventory/:itemId/respond", requireRole("client", "admin"), async
       return;
     }
 
+    const wasApproved = item.selectedByClient === true;
+    const isNowApproved = data.selectedByClient;
+
+    // Получаем информацию о комплектующем для проверки остатка
+    const inventoryItem = await prisma.inventoryItem.findUnique({
+      where: { id: item.inventoryItemId },
+    });
+
+    if (!inventoryItem) {
+      res.status(404).json({ message: "Комплектующее не найдено на складе" });
+      return;
+    }
+
+    // Логика списания/возврата со склада (только для опциональных комплектующих)
+    // Обязательные уже списаны при добавлении админом
+    if (!item.isRequired) {
+      // Если клиент подтверждает (не было подтверждено ранее) - списываем
+      if (isNowApproved && !wasApproved) {
+        if (inventoryItem.stock < item.quantity) {
+          res.status(400).json({
+            message: `Недостаточно товара на складе. Доступно: ${inventoryItem.stock}, требуется: ${item.quantity}`,
+          });
+          return;
+        }
+        await prisma.inventoryItem.update({
+          where: { id: item.inventoryItemId },
+          data: {
+            stock: { decrement: item.quantity },
+          },
+        });
+      }
+      // Если клиент отклоняет (было подтверждено ранее) - возвращаем на склад
+      else if (!isNowApproved && wasApproved) {
+        await prisma.inventoryItem.update({
+          where: { id: item.inventoryItemId },
+          data: {
+            stock: { increment: item.quantity },
+          },
+        });
+      }
+    }
+
     // Обновляем статус
     const updated = await prisma.orderStageInventoryItem.update({
       where: { id: itemId },

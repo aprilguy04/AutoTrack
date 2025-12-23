@@ -2,6 +2,7 @@
  * Сервис для работы с заказами
  */
 import { prisma } from "../../db/prisma.js";
+import { notificationsService } from "../notifications/notifications.service.js";
 
 export const ordersService = {
   /**
@@ -130,6 +131,35 @@ export const ordersService = {
       } catch (err) {
         console.warn("Could not load vehicle generation:", err);
       }
+    }
+
+    // Уведомляем всех админов о новом заказе
+    try {
+      const admins = await prisma.user.findMany({
+        where: { role: "admin" },
+        select: { id: true },
+      });
+
+      const customerName = order.customer?.fullName || "Неизвестный клиент";
+      const vehicleInfo = data.vehicleInfo || order.title;
+
+      for (const admin of admins) {
+        await notificationsService.create({
+          userId: admin.id,
+          orderId: order.id,
+          type: "new_order",
+          title: "Новый заказ",
+          message: `Клиент ${customerName} создал заказ: ${vehicleInfo}`,
+          metadata: {
+            customerId: data.customerId,
+            customerName,
+            orderTitle: order.title,
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Failed to notify admins about new order:", err);
+      // Не прерываем выполнение, заказ уже создан
     }
 
     return order;

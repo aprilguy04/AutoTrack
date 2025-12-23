@@ -4,7 +4,7 @@ import { clsx } from "clsx";
 import { useStageDetails, useStageMutations } from "../useOrderStages.js";
 import { Button } from "../../../shared/ui/Button.js";
 import { Card } from "../../../shared/ui/Card.js";
-import { ImageGallery } from "../../../shared/ui/ImageGallery.js";
+import { FileGallery } from "../../../shared/ui/FileGallery.js";
 import { useAuthStore } from "../../../entities/user/store.js";
 import { StageInventoryClient } from "./StageInventoryClient.tsx";
 import { StageInventoryManager } from "../../admin/components/StageInventoryManager.tsx";
@@ -61,6 +61,7 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false, veh
         url: attachment.filePath,
         title: attachment.fileName,
         description: attachment.description ?? undefined,
+        mimeType: attachment.mimeType ?? undefined,
       })) ?? [],
     [stage?.attachments],
   );
@@ -98,7 +99,7 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false, veh
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex justify-end">
+    <div className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex justify-end">
       <div className="w-full max-w-2xl h-full bg-dark-900 border-l border-dark-700 flex flex-col">
         <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
           <div>
@@ -193,7 +194,7 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false, veh
                         {isUploading ? "Загрузка..." : "Добавить"}
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.zip,.rar"
                           className="hidden"
                           onChange={(event) => {
                             const file = event.target.files?.[0];
@@ -206,7 +207,7 @@ export const StageDetailsDrawer = ({ stageId, onClose, allowUpdates = false, veh
                       </label>
                     )}
                   </div>
-                  <ImageGallery images={attachments} />
+                  <FileGallery files={attachments} />
                 </div>
               </Card>
 

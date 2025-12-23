@@ -4,6 +4,7 @@
 import { prisma } from "../../db/prisma.js";
 import { ordersService } from "../orders/orders.service.js";
 import { stagesService } from "../stages/stages.service.js";
+import { notificationsService } from "../notifications/notifications.service.js";
 
 export const adminService = {
   /**
@@ -181,11 +182,28 @@ export const adminService = {
       throw new Error("Комплектующее не найдено");
     }
 
-    return prisma.orderStageInventoryItem.create({
+    const quantity = data.quantity || 1;
+
+    // Проверяем наличие на складе
+    if (inventoryItem.stock < quantity) {
+      throw new Error(`Недостаточно товара на складе. Доступно: ${inventoryItem.stock}, требуется: ${quantity}`);
+    }
+
+    // Если комплектующее обязательное - сразу списываем со склада
+    if (data.isRequired) {
+      await prisma.inventoryItem.update({
+        where: { id: data.inventoryItemId },
+        data: {
+          stock: { decrement: quantity },
+        },
+      });
+    }
+
+    const suggestion = await prisma.orderStageInventoryItem.create({
       data: {
         orderStageId: data.orderStageId,
         inventoryItemId: data.inventoryItemId,
-        quantity: data.quantity || 1,
+        quantity: quantity,
         isRequired: data.isRequired || false,
         adminNotes: data.adminNotes,
         unitPrice: inventoryItem.price,
@@ -196,6 +214,28 @@ export const adminService = {
         inventoryItem: true,
       },
     });
+
+    // Уведомляем клиента о предложенном комплектующем
+    try {
+      await notificationsService.create({
+        userId: stage.order.customerId,
+        orderId: stage.orderId,
+        type: "inventory_suggested",
+        title: "Предложены комплектующие",
+        message: `Администратор предложил "${inventoryItem.name}" для этапа "${stage.name}"`,
+        metadata: {
+          stageId: stage.id,
+          stageName: stage.name,
+          orderTitle: stage.order.title,
+          inventoryItemName: inventoryItem.name,
+          quantity: data.quantity || 1,
+        },
+      });
+    } catch (err) {
+      console.error("Failed to notify client about inventory suggestion:", err);
+    }
+
+    return suggestion;
   },
 
   /**
@@ -218,8 +258,30 @@ export const adminService = {
 
   /**
    * Удалить предложенное комплектующее из этапа
+   * Возвращает товар на склад если он был списан (обязательный или одобренный клиентом)
    */
   async removeInventoryFromOrderStage(id: string) {
+    // Получаем комплектующее перед удалением
+    const item = await prisma.orderStageInventoryItem.findUnique({
+      where: { id },
+    });
+
+    if (!item) {
+      throw new Error("Комплектующее не найдено");
+    }
+
+    // Возвращаем на склад если было списано:
+    // - обязательное комплектующее (списывается сразу)
+    // - опциональное одобренное клиентом
+    if (item.isRequired || item.selectedByClient) {
+      await prisma.inventoryItem.update({
+        where: { id: item.inventoryItemId },
+        data: {
+          stock: { increment: item.quantity },
+        },
+      });
+    }
+
     return prisma.orderStageInventoryItem.delete({
       where: { id },
     });
@@ -320,6 +382,13 @@ export const adminService = {
    */
   async reorderOrderStages(orderId: string, stages: Array<{ stageId: string; orderIndex: number }>) {
     await stagesService.reorderStages(orderId, stages);
+  },
+
+  /**
+   * Удалить этап заказа
+   */
+  async deleteOrderStage(stageId: string) {
+    return stagesService.deleteStage(stageId);
   },
 };
 

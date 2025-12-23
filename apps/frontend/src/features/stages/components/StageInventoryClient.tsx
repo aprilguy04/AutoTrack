@@ -232,7 +232,7 @@ export const StageInventoryClient = ({ stageId, orderId }: StageInventoryClientP
                       </div>
 
                       {/* Форма ответа */}
-                      {isExpanded && isPending && (
+                      {isExpanded && (
                         <div className="mt-3 p-3 rounded-lg bg-dark-900/70 border border-dark-600 space-y-3">
                           <div className="space-y-2">
                             <label className="text-xs text-dark-400">Комментарий (необязательно)</label>
@@ -286,7 +286,7 @@ export const StageInventoryClient = ({ stageId, orderId }: StageInventoryClientP
                   )}
 
                   {/* Кнопка изменить решение */}
-                  {!isPending && (
+                  {!isPending && !isExpanded && (
                     <div className="mt-3">
                       <Button
                         size="sm"

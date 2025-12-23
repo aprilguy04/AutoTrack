@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { InventoryItem, CreateInventoryItemInput } from "../api.ts";
 import { Button } from "../../../shared/ui/Button.tsx";
 
@@ -32,6 +33,15 @@ export const InventoryItemForm = ({ item, onClose, onSubmit, isLoading }: Invent
 
   useEffect(() => {
     if (item) {
+      // Преобразуем Decimal объекты в числа
+      const parseNumber = (value: any): number | undefined => {
+        if (value === null || value === undefined) return undefined;
+        if (typeof value === "number") return value;
+        if (typeof value === "object" && value.toNumber) return value.toNumber();
+        const parsed = parseFloat(String(value));
+        return isNaN(parsed) ? undefined : parsed;
+      };
+
       setFormData({
         name: item.name,
         description: item.description || "",
@@ -41,13 +51,13 @@ export const InventoryItemForm = ({ item, onClose, onSubmit, isLoading }: Invent
         oemNumber: item.oemNumber || "",
         manufacturerPartNumber: item.manufacturerPartNumber || "",
         manufacturer: item.manufacturer || "",
-        stock: item.stock,
-        minStock: item.minStock,
+        stock: typeof item.stock === "number" ? item.stock : 0,
+        minStock: typeof item.minStock === "number" ? item.minStock : 0,
         unit: item.unit,
-        price: item.price,
-        cost: item.cost,
+        price: parseNumber(item.price),
+        cost: parseNumber(item.cost),
         isUniversal: item.isUniversal,
-        weight: item.weight,
+        weight: parseNumber(item.weight),
         location: item.location || "",
         notes: item.notes || "",
       });
@@ -56,14 +66,34 @@ export const InventoryItemForm = ({ item, onClose, onSubmit, isLoading }: Invent
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    // Очищаем пустые строки и преобразуем в undefined
+    const cleanedData: CreateInventoryItemInput = {
+      name: formData.name,
+      category: formData.category,
+      description: formData.description || undefined,
+      subcategory: formData.subcategory || undefined,
+      sku: formData.sku || undefined,
+      oemNumber: formData.oemNumber || undefined,
+      manufacturerPartNumber: formData.manufacturerPartNumber || undefined,
+      manufacturer: formData.manufacturer || undefined,
+      stock: formData.stock,
+      minStock: formData.minStock,
+      unit: formData.unit || undefined,
+      price: formData.price,
+      cost: formData.cost,
+      isUniversal: formData.isUniversal,
+      weight: formData.weight,
+      location: formData.location || undefined,
+      notes: formData.notes || undefined,
+    };
+    onSubmit(cleanedData);
   };
 
   const handleChange = (field: keyof CreateInventoryItemInput, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-start justify-center p-6 overflow-y-auto">
       <div className="w-full max-w-4xl bg-dark-900 rounded-3xl border border-dark-700 shadow-2xl my-8">
         <div className="p-6 border-b border-dark-700 flex items-start justify-between gap-4">
@@ -320,6 +350,7 @@ export const InventoryItemForm = ({ item, onClose, onSubmit, isLoading }: Invent
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -90,6 +90,19 @@ router.patch("/orders/:orderId/stages/:stageId", async (req, res) => {
   }
 });
 
+/**
+ * DELETE /api/admin/orders/:orderId/stages/:stageId - Удалить этап заказа
+ */
+router.delete("/orders/:orderId/stages/:stageId", async (req, res) => {
+  try {
+    await adminService.deleteOrderStage(req.params.stageId);
+    res.json({ message: "Этап удалён" });
+  } catch (error: any) {
+    console.error("Delete order stage error:", error);
+    res.status(500).json({ message: error.message || "Не удалось удалить этап" });
+  }
+});
+
 const reorderStagesSchema = z.object({
   stages: z.array(
     z.object({

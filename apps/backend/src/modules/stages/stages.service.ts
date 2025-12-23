@@ -29,7 +29,7 @@ export const stagesService = {
       orderIndex = (aggregate._max.orderIndex ?? -1) + 1;
     }
 
-    return prisma.orderStage.create({
+    const stage = await prisma.orderStage.create({
       data: {
         orderId,
         name: data.name,
@@ -48,6 +48,28 @@ export const stagesService = {
         },
       },
     });
+
+    // Уведомляем механика о новом назначенном этапе
+    if (data.assignedTo) {
+      try {
+        await notificationsService.create({
+          userId: data.assignedTo,
+          orderId,
+          type: "stage_assigned",
+          title: "Новый этап назначен",
+          message: `Вам назначен этап "${data.name}" для заказа "${order.title}"`,
+          metadata: {
+            stageId: stage.id,
+            stageName: data.name,
+            orderTitle: order.title,
+          },
+        });
+      } catch (err) {
+        console.error("Failed to notify mechanic about new stage:", err);
+      }
+    }
+
+    return stage;
   },
 
   /**
@@ -70,6 +92,8 @@ export const stagesService = {
     }
 
     const updatePayload: any = { ...data };
+    const isNewAssignment = data.assignedTo !== undefined && data.assignedTo !== existing.assignedTo && data.assignedTo !== null;
+
     if (data.assignedTo !== undefined && data.assignedTo !== existing.assignedTo) {
       updatePayload.assignedTo = data.assignedTo;
       updatePayload.lastViewedAt = null;
@@ -89,6 +113,26 @@ export const stagesService = {
       },
     });
 
+    // Уведомляем механика о назначении на существующий этап
+    if (isNewAssignment && data.assignedTo) {
+      try {
+        await notificationsService.create({
+          userId: data.assignedTo,
+          orderId: existing.orderId,
+          type: "stage_assigned",
+          title: "Этап назначен вам",
+          message: `Вам назначен этап "${existing.name}" для заказа "${existing.order.title}"`,
+          metadata: {
+            stageId,
+            stageName: existing.name,
+            orderTitle: existing.order.title,
+          },
+        });
+      } catch (err) {
+        console.error("Failed to notify mechanic about stage assignment:", err);
+      }
+    }
+
     if (data.status && data.status !== existing.status) {
       if (data.status === "done" && existing.status !== "done") {
         try {
@@ -96,9 +140,9 @@ export const stagesService = {
             userId: existing.order.customerId,
             orderId: existing.orderId,
             type: "stage_done",
-            title: "Этап завершен",
-            message: `Этап "${existing.name}" завершен`,
-            metadata: { stageId },
+            title: `Этап "${existing.name}" завершён`,
+            message: `Заказ: ${existing.order.title}`,
+            metadata: { stageId, stageName: existing.name, orderTitle: existing.order.title },
           });
         } catch (err) {
           console.warn("Failed to create stage_done notification (admin):", err);
@@ -125,8 +169,9 @@ export const stagesService = {
             userId: existing.order.customerId,
             orderId: existing.orderId,
             type: "order_completed",
-            title: "Заказ завершен",
-            message: "Все этапы заказа завершены",
+            title: `Заказ "${existing.order.title}" завершён`,
+            message: "Все этапы ремонта выполнены",
+            metadata: { orderTitle: existing.order.title },
           });
         } catch (err) {
           console.warn("Failed to create order_completed notification (admin):", err);
@@ -155,6 +200,46 @@ export const stagesService = {
       }),
     );
     await prisma.$transaction(transactions);
+  },
+
+  /**
+   * Удалить этап (для администратора)
+   * Возвращает комплектующие на склад при удалении
+   */
+  async deleteStage(stageId: string) {
+    const stage = await prisma.orderStage.findUnique({
+      where: { id: stageId },
+      include: {
+        inventoryItems: true,
+      },
+    });
+
+    if (!stage) {
+      throw new Error("Этап не найден");
+    }
+
+    // Возвращаем комплектующие на склад
+    for (const item of stage.inventoryItems) {
+      // Возвращаем только если было списано (обязательное или одобренное клиентом)
+      if (item.isRequired || item.selectedByClient) {
+        await prisma.inventoryItem.update({
+          where: { id: item.inventoryItemId },
+          data: {
+            stock: { increment: item.quantity },
+          },
+        });
+      }
+    }
+
+    // Удаляем все связанные записи и сам этап
+    await prisma.$transaction([
+      prisma.orderStageInventoryItem.deleteMany({ where: { orderStageId: stageId } }),
+      prisma.stageComment.deleteMany({ where: { stageId } }),
+      prisma.stageAttachment.deleteMany({ where: { stageId } }),
+      prisma.orderStage.delete({ where: { id: stageId } }),
+    ]);
+
+    return { success: true };
   },
 
   /**
@@ -334,9 +419,9 @@ export const stagesService = {
           userId: stage.order.customerId,
           orderId: stage.orderId,
           type: "stage_done",
-          title: "Этап завершен",
-          message: `Этап "${stage.name}" завершен`,
-          metadata: { stageId },
+          title: `Этап "${stage.name}" завершён`,
+          message: `Заказ: ${stage.order.title}`,
+          metadata: { stageId, stageName: stage.name, orderTitle: stage.order.title },
         });
       } catch (err) {
         console.warn("Failed to create stage_done notification:", err);
@@ -364,8 +449,9 @@ export const stagesService = {
           userId: stage.order.customerId,
           orderId: stage.orderId,
           type: "order_completed",
-          title: "Заказ завершен",
-          message: "Все этапы заказа завершены",
+          title: `Заказ "${stage.order.title}" завершён`,
+          message: "Все этапы ремонта выполнены",
+          metadata: { orderTitle: stage.order.title },
         });
       } catch (err) {
         console.warn("Failed to create order_completed notification:", err);
