@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { clsx } from "clsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminOrders, useMechanics, useMarkOrderViewed } from "../features/admin/useAdminOrders.ts";
@@ -217,8 +218,8 @@ export const AdminPage = () => {
         </div>
       </Card>
 
-      {selectedOrder && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-start justify-center p-6">
+      {selectedOrder && createPortal(
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-start justify-center p-6">
           <div className="w-full max-w-5xl bg-dark-900 rounded-3xl border border-dark-700 shadow-2xl flex flex-col max-h-full">
             <div className="p-6 border-b border-dark-700 flex items-start justify-between gap-4">
               <div>
@@ -384,7 +385,8 @@ export const AdminPage = () => {
               ) : null}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <StageDetailsDrawer
