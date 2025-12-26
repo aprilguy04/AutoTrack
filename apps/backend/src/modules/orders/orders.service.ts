@@ -6,6 +6,20 @@ import { notificationsService } from "../notifications/notifications.service.js"
 
 export const ordersService = {
   /**
+   * Получить поколение автомобиля по ID (для валидации года)
+   */
+  async getVehicleGeneration(generationId: string) {
+    return prisma.vehicleGeneration.findUnique({
+      where: { id: generationId },
+      select: {
+        id: true,
+        yearFrom: true,
+        yearTo: true,
+      },
+    });
+  },
+
+  /**
    * Создать новый заказ
    */
   async createOrder(data: {

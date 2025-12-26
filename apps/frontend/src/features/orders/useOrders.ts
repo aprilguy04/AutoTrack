@@ -13,10 +13,19 @@ export type OrderDto = {
   id: string;
   title: string;
   vehicle: string;
+  serviceType: string;
+  serviceTypeLabel: string;
   status: string;
   stages: StageDto[];
   createdAt: string;
   updatedAt: string;
+};
+
+const serviceTypeLabels: Record<string, string> = {
+  diagnostics: "Диагностика",
+  repair: "Ремонт",
+  maintenance: "Техническое обслуживание",
+  other: "Другое",
 };
 
 /**
@@ -35,6 +44,13 @@ function transformOrder(order: Order): OrderDto {
     vehicle = order.vehicleInfo;
   }
 
+  // Формируем label для типа услуги
+  const serviceType = order.serviceType || "other";
+  let serviceTypeLabel = serviceTypeLabels[serviceType] || serviceType;
+  if (serviceType === "other" && order.serviceTypeOther) {
+    serviceTypeLabel = order.serviceTypeOther;
+  }
+
   // Преобразуем этапы
   const stages: StageDto[] = (order.stages || []).map((stage: any) => ({
     id: stage.id,
@@ -48,6 +64,8 @@ function transformOrder(order: Order): OrderDto {
     id: order.id,
     title: order.title,
     vehicle,
+    serviceType,
+    serviceTypeLabel,
     status: order.status,
     stages,
     createdAt: order.createdAt,

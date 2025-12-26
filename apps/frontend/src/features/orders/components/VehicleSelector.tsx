@@ -6,8 +6,14 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { vehiclesApi, type VehicleBrand, type VehicleModel, type VehicleGeneration } from "../../vehicles/api.js";
 
+export interface SelectedGenerationInfo {
+  id: string;
+  yearFrom?: number;
+  yearTo?: number;
+}
+
 interface VehicleSelectorProps {
-  onSelect: (generationId: string | null) => void;
+  onSelect: (generationId: string | null, generationInfo?: SelectedGenerationInfo) => void;
   selectedGenerationId?: string;
 }
 
@@ -103,8 +109,21 @@ export const VehicleSelector = ({ onSelect, selectedGenerationId }: VehicleSelec
 
   // Уведомляем родителя об изменении выбранного поколения
   useEffect(() => {
-    onSelect(selectedGenerationIdState || null);
-  }, [selectedGenerationIdState, onSelect]);
+    if (selectedGenerationIdState) {
+      const selectedGen = generations.find(g => g.id === selectedGenerationIdState);
+      if (selectedGen) {
+        onSelect(selectedGenerationIdState, {
+          id: selectedGen.id,
+          yearFrom: selectedGen.yearFrom,
+          yearTo: selectedGen.yearTo,
+        });
+      } else {
+        onSelect(selectedGenerationIdState);
+      }
+    } else {
+      onSelect(null);
+    }
+  }, [selectedGenerationIdState, generations, onSelect]);
 
   // Фильтруем марки по вводу (как на av.by - поиск по мере ввода)
   const filteredBrands = useMemo(() => {

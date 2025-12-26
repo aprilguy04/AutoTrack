@@ -1,0 +1,450 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="29.2.9">
+  <diagram id="ERD" name="Логическая схема БД">
+    <mxGraphModel dx="1034" dy="1740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="user" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" value="User" vertex="1">
+          <mxGeometry height="174" width="180" x="30" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="user_pk" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="user_sep" parent="user" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="180" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="user_f1" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     email: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="user_f2" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     passwordHash: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="user_f3" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     fullName: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="user_f4" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     phone: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="user_f5" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     role: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="user_f6" parent="user" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     isActive: boolean" vertex="1">
+          <mxGeometry height="20" width="180" y="154" as="geometry" />
+        </mxCell>
+        <mxCell id="brand" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="VehicleBrand" vertex="1">
+          <mxGeometry height="126" width="160" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="brand_pk" parent="brand" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="brand_sep" parent="brand" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="brand_f1" parent="brand" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="brand_f2" parent="brand" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     nameRu: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="brand_f3" parent="brand" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     logoUrl: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="model" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="VehicleModel" vertex="1">
+          <mxGeometry height="126" width="160" x="460" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="model_pk" parent="model" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="model_sep" parent="model" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="model_fk" parent="model" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  brandId: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="model_f1" parent="model" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="model_f2" parent="model" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     nameRu: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="generation" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="VehicleGeneration" vertex="1">
+          <mxGeometry height="146" width="160" x="660" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gen_pk" parent="generation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="gen_sep" parent="generation" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="gen_fk" parent="generation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  modelId: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="gen_f1" parent="generation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="gen_f2" parent="generation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     yearFrom: int" vertex="1">
+          <mxGeometry height="20" width="160" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="gen_f3" parent="generation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     yearTo: int" vertex="1">
+          <mxGeometry height="20" width="160" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_tmpl" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="ServiceTemplate" vertex="1">
+          <mxGeometry height="106" width="160" x="860" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_pk" parent="svc_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_sep" parent="svc_tmpl" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_f1" parent="svc_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_f2" parent="svc_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     description: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_tmpl" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="StageTemplate" vertex="1">
+          <mxGeometry height="146" width="180" x="860" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_pk" parent="stg_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_sep" parent="stg_tmpl" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="180" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_fk" parent="stg_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  serviceTemplateId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_f1" parent="stg_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_f2" parent="stg_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     orderIndex: int" vertex="1">
+          <mxGeometry height="20" width="180" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_f3" parent="stg_tmpl" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     estimatedHours: float" vertex="1">
+          <mxGeometry height="20" width="180" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="order" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="Order" vertex="1">
+          <mxGeometry height="226" width="200" x="40" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="order_pk" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="order_sep" parent="order" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="200" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="order_fk1" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  customerId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="order_fk2" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  vehicleGenerationId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="order_fk3" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  serviceTemplateId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="order_f1" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     title: varchar" vertex="1">
+          <mxGeometry height="20" width="200" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="order_f2" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     vehicleYear: int" vertex="1">
+          <mxGeometry height="20" width="200" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="order_f3" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     serviceType: varchar" vertex="1">
+          <mxGeometry height="20" width="200" y="154" as="geometry" />
+        </mxCell>
+        <mxCell id="order_f4" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     status: varchar" vertex="1">
+          <mxGeometry height="20" width="200" y="174" as="geometry" />
+        </mxCell>
+        <mxCell id="order_f5" parent="order" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     vinNumber: varchar" vertex="1">
+          <mxGeometry height="20" width="200" y="194" as="geometry" />
+        </mxCell>
+        <mxCell id="stage" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="OrderStage" vertex="1">
+          <mxGeometry height="186" width="180" x="280" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_pk" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_sep" parent="stage" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="180" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_fk1" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  orderId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_fk2" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  assignedTo: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_fk3" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  stageTemplateId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_f1" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_f2" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     status: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="stage_f3" parent="stage" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     orderIndex: int" vertex="1">
+          <mxGeometry height="20" width="180" y="154" as="geometry" />
+        </mxCell>
+        <mxCell id="comment" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="StageComment" vertex="1">
+          <mxGeometry height="126" width="160" x="500" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="comment_pk" parent="comment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="comment_sep" parent="comment" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="comment_fk1" parent="comment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  stageId: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="comment_fk2" parent="comment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  authorId: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="comment_f1" parent="comment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     content: nvarchar" vertex="1">
+          <mxGeometry height="20" width="160" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="attachment" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="StageAttachment" vertex="1">
+          <mxGeometry height="146" width="160" x="500" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="att_pk" parent="attachment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="att_sep" parent="attachment" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="160" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="att_fk1" parent="attachment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  stageId: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="att_fk2" parent="attachment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  uploadedById: uuid" vertex="1">
+          <mxGeometry height="20" width="160" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="att_f1" parent="attachment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     fileName: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="att_f2" parent="attachment" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     filePath: varchar" vertex="1">
+          <mxGeometry height="20" width="160" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="inventory" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="InventoryItem" vertex="1">
+          <mxGeometry height="186" width="170" x="700" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_pk" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="170" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_sep" parent="inventory" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="170" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_f1" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     name: varchar" vertex="1">
+          <mxGeometry height="20" width="170" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_f2" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     sku: varchar" vertex="1">
+          <mxGeometry height="20" width="170" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_f3" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     category: varchar" vertex="1">
+          <mxGeometry height="20" width="170" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_f4" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     stock: int" vertex="1">
+          <mxGeometry height="20" width="170" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_f5" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     price: decimal" vertex="1">
+          <mxGeometry height="20" width="170" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="inv_f6" parent="inventory" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     manufacturer: varchar" vertex="1">
+          <mxGeometry height="20" width="170" y="154" as="geometry" />
+        </mxCell>
+        <mxCell id="compat" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="InventoryItemCompatibility" vertex="1">
+          <mxGeometry height="166" width="200" x="700" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_pk" parent="compat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_sep" parent="compat" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="200" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_fk1" parent="compat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  inventoryItemId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_fk2" parent="compat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  vehicleBrandId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_fk3" parent="compat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  vehicleModelId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_fk4" parent="compat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  vehicleGenerationId: uuid" vertex="1">
+          <mxGeometry height="20" width="200" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="compat_f1" parent="compat" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     yearFrom: int" vertex="1">
+          <mxGeometry height="20" width="200" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="crossref" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="InventoryItemCrossReference" vertex="1">
+          <mxGeometry height="126" width="210" x="920" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="crossref_pk" parent="crossref" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="210" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="crossref_sep" parent="crossref" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="210" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="crossref_fk1" parent="crossref" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  fromItemId: uuid" vertex="1">
+          <mxGeometry height="20" width="210" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="crossref_fk2" parent="crossref" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  toItemId: uuid" vertex="1">
+          <mxGeometry height="20" width="210" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="crossref_f1" parent="crossref" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     referenceType: varchar" vertex="1">
+          <mxGeometry height="20" width="210" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="stii" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="StageTemplateInventoryItem" vertex="1">
+          <mxGeometry height="146" width="210" x="1060" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="stii_pk" parent="stii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="210" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="stii_sep" parent="stii" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="210" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="stii_fk1" parent="stii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  stageTemplateId: uuid" vertex="1">
+          <mxGeometry height="20" width="210" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="stii_fk2" parent="stii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  inventoryItemId: uuid" vertex="1">
+          <mxGeometry height="20" width="210" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="stii_f1" parent="stii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     isRequired: boolean" vertex="1">
+          <mxGeometry height="20" width="210" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="stii_f2" parent="stii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     quantity: int" vertex="1">
+          <mxGeometry height="20" width="210" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="osii" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="OrderStageInventoryItem" vertex="1">
+          <mxGeometry height="126" width="190" x="920" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="osii_pk" parent="osii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="190" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="osii_sep" parent="osii" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="190" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="osii_fk1" parent="osii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  orderStageId: uuid" vertex="1">
+          <mxGeometry height="20" width="190" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="osii_fk2" parent="osii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  inventoryItemId: uuid" vertex="1">
+          <mxGeometry height="20" width="190" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="osii_f1" parent="osii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     quantity: int, status: varchar" vertex="1">
+          <mxGeometry height="20" width="190" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="oii" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="OrderInventoryItem" vertex="1">
+          <mxGeometry height="126" width="180" x="280" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="oii_pk" parent="oii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="oii_sep" parent="oii" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="180" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="oii_fk1" parent="oii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  orderId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="oii_fk2" parent="oii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  inventoryItemId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="oii_f1" parent="oii" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     quantity: int" vertex="1">
+          <mxGeometry height="20" width="180" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="notif" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;" value="Notification" vertex="1">
+          <mxGeometry height="166" width="180" x="40" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_pk" parent="notif" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=1" value="PK  id: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_sep" parent="notif" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#000000;" value="" vertex="1">
+          <mxGeometry height="8" width="180" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_fk1" parent="notif" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  userId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="54" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_fk2" parent="notif" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=2" value="FK  orderId: uuid" vertex="1">
+          <mxGeometry height="20" width="180" y="74" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_f1" parent="notif" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     type: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_f2" parent="notif" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     title: varchar" vertex="1">
+          <mxGeometry height="20" width="180" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="notif_f3" parent="notif" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" value="     isRead: boolean" vertex="1">
+          <mxGeometry height="20" width="180" y="134" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1" edge="1" parent="1" source="brand_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="model_fk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel2" edge="1" parent="1" source="model_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="gen_fk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel3" edge="1" parent="1" source="user_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="order_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel4" edge="1" parent="1" source="order_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="stage_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel5" edge="1" parent="1" source="stage_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="comment_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel6" edge="1" parent="1" source="stage_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="att_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel7" edge="1" parent="1" source="svc_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="stg_fk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel8" edge="1" parent="1" source="stage_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="osii_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel9" edge="1" parent="1" source="inv_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="osii_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel10" edge="1" parent="1" source="user_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="notif_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel11" edge="1" parent="1" source="order_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="notif_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel12" edge="1" parent="1" source="inv_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="compat_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel13" edge="1" parent="1" source="inv_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="crossref_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel14" edge="1" parent="1" source="stg_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="stii_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel15" edge="1" parent="1" source="inv_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="stii_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel16" edge="1" parent="1" source="order_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="oii_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel17" edge="1" parent="1" source="inv_pk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" target="oii_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+olor=#000000;" edge="1" parent="1" source="order_pk" target="oii_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" edge="1" parent="1" source="inv_pk" target="oii_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+olor=#000000;" edge="1" parent="1" source="order_pk" target="oii_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" edge="1" parent="1" source="inv_pk" target="oii_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+olor=#000000;" edge="1" parent="1" source="order_pk" target="oii_fk1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;strokeColor=#000000;" edge="1" parent="1" source="inv_pk" target="oii_fk2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

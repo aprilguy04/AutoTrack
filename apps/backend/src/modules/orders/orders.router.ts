@@ -85,6 +85,41 @@ router.post("/", async (req, res) => {
       return;
     }
 
+    // Валидация года выпуска
+    if (data.vehicleYear) {
+      const currentYear = new Date().getFullYear();
+
+      // Проверка относительно поколения автомобиля
+      if (data.vehicleGenerationId) {
+        const generation = await ordersService.getVehicleGeneration(data.vehicleGenerationId);
+        if (generation) {
+          const { yearFrom, yearTo } = generation;
+          if (yearFrom && data.vehicleYear < yearFrom) {
+            res.status(400).json({
+              message: `Год выпуска не может быть меньше ${yearFrom} для данного поколения`
+            });
+            return;
+          }
+          // Если yearTo не указан, используем текущий год
+          const maxYear = yearTo || currentYear;
+          if (data.vehicleYear > maxYear) {
+            res.status(400).json({
+              message: `Год выпуска не может быть больше ${maxYear}`
+            });
+            return;
+          }
+        }
+      } else {
+        // Если поколение не выбрано, просто проверяем что год не в будущем
+        if (data.vehicleYear > currentYear) {
+          res.status(400).json({
+            message: `Год выпуска не может быть больше ${currentYear}`
+          });
+          return;
+        }
+      }
+    }
+
     console.log("Creating order with data:", {
       ...data,
       customerId: userId,

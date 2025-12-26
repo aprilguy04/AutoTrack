@@ -41,10 +41,10 @@ export const OrderTracker = ({ order, onStageClick }: Props) => {
       <div className="space-y-4 flex-1">
         {/* Header */}
         <div className="space-y-2">
-          <h3 className="text-xl font-bold text-dark-50 line-clamp-2">{order.title}</h3>
+          <h3 className="text-xl font-bold text-dark-50 line-clamp-2">{order.vehicle}</h3>
           <div className="flex items-center gap-2 text-sm text-dark-400">
-            <span>🚗</span>
-            <span className="font-medium">{order.vehicle}</span>
+            <span>🔧</span>
+            <span className="font-medium">{order.serviceTypeLabel}</span>
           </div>
         </div>
 
@@ -66,7 +66,7 @@ export const OrderTracker = ({ order, onStageClick }: Props) => {
         <div className="space-y-2 flex-1">
           <h4 className="text-sm font-semibold text-dark-300 uppercase tracking-wide">Этапы</h4>
           <div className="space-y-2">
-            {order.stages.map((stage, index) => {
+            {order.stages.map((stage) => {
               const config = statusConfig[stage.status];
               return (
                 <button

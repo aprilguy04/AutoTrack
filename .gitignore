@@ -8,7 +8,9 @@ coverage/
 
 # Env files
 .env
-.env.*
+.env.local
+.env.*.local
+!.env.example
 
 # Logs
 npm-debug.log*
@@ -17,11 +19,20 @@ yarn-error.log*
 # Editors
 .DS_Store
 thumbs.db
+.idea/
+.vscode/
 
 # Runtime artifacts
 *.sqlite
 
 uploads/
+
+# IDE
+*.swp
+*.swo
+
+# Docker volumes (local)
+.docker/
 
 
 

@@ -1,8 +1,43 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "../shared/ui/Button.tsx";
 import { Card } from "../shared/ui/Card.tsx";
+import { servicesApi, ServiceTemplate } from "../features/services/api.ts";
+
+// Определение типа услуги по названию для выбора иконки и цвета
+const getServiceType = (name: string): string => {
+  const lowerName = name.toLowerCase();
+  if (lowerName.includes("диагностик")) return "diagnostics";
+  if (lowerName.includes("ремонт") || lowerName.includes("замена")) return "repair";
+  if (lowerName.includes("обслуживание") || lowerName.includes("то")) return "maintenance";
+  return "other";
+};
+
+const serviceIcons: Record<string, string> = {
+  diagnostics: "🔍",
+  repair: "🔧",
+  maintenance: "🛠️",
+  other: "⚙️",
+};
+
+const serviceColors: Record<string, { from: string; to: string; border: string; text: string }> = {
+  diagnostics: { from: "from-blue-500", to: "to-blue-600", border: "border-blue-400/30", text: "text-blue-400" },
+  repair: { from: "from-orange-500", to: "to-orange-600", border: "border-orange-400/30", text: "text-orange-400" },
+  maintenance: { from: "from-emerald-500", to: "to-emerald-600", border: "border-emerald-400/30", text: "text-emerald-400" },
+  other: { from: "from-purple-500", to: "to-purple-600", border: "border-purple-400/30", text: "text-purple-400" },
+};
 
 export const HomePage = () => {
+  const [services, setServices] = useState<ServiceTemplate[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    servicesApi.getAll()
+      .then(({ services }) => setServices(services))
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
+
   return (
     <div className="space-y-12 animate-fade-in">
       {/* Hero Section */}
@@ -83,6 +118,79 @@ export const HomePage = () => {
             </div>
           </div>
         </Card>
+      </section>
+
+      {/* Services Section */}
+      <section className="space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl md:text-4xl font-bold text-dark-50">
+            Наши услуги
+          </h2>
+          <p className="text-dark-400 max-w-2xl mx-auto">
+            Полный спектр услуг по ремонту и обслуживанию автомобилей
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <div className="text-dark-400">Загрузка услуг...</div>
+          </div>
+        ) : services.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service, index) => {
+              const serviceType = getServiceType(service.name);
+              const colors = serviceColors[serviceType];
+              const icon = serviceIcons[serviceType];
+
+              return (
+                <Card
+                  key={service.id}
+                  variant="glass"
+                  hover
+                  className="animate-fade-in group relative overflow-hidden"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${colors.from}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                  <div className="space-y-4 relative z-10">
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${colors.from} ${colors.to} flex items-center justify-center text-2xl shadow-lg ${colors.border} border`}>
+                      {icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-dark-50">
+                      {service.name}
+                    </h3>
+                    {service.description && (
+                      <p className="text-dark-300 text-sm leading-relaxed">
+                        {service.description}
+                      </p>
+                    )}
+                    {service.stageTemplates && service.stageTemplates.length > 0 && (
+                      <div className="pt-2 space-y-1">
+                        <p className={`text-xs font-medium ${colors.text}`}>Этапы работ:</p>
+                        <ul className="text-sm text-dark-400 space-y-1">
+                          {service.stageTemplates.slice(0, 3).map((stage) => (
+                            <li key={stage.id} className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-dark-500" />
+                              {stage.name}
+                            </li>
+                          ))}
+                          {service.stageTemplates.length > 3 && (
+                            <li className="text-dark-500 text-xs">
+                              и ещё {service.stageTemplates.length - 3} этап(ов)...
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-dark-400">
+            Услуги пока не добавлены
+          </div>
+        )}
       </section>
 
       {/* CTA Section */}
